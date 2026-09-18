@@ -29,7 +29,6 @@ const labelBase = 'block text-sm font-medium text-gray-light';
         <div>
           <dt class="text-sm font-semibold text-red">Address</dt>
           <dd class="mt-1">
-            {/* TODO: real address */}
             {site.address.line1}, {site.address.line2}<br />
             {site.address.city}, {site.address.region} {site.address.postal}
           </dd>
@@ -50,12 +49,11 @@ const labelBase = 'block text-sm font-medium text-gray-light';
         </div>
       </dl>
 
-      <!-- Map embed (placeholder) -->
+      <!-- Map embed: Drum Sync Academy, 9559 Center Ave Ste A, Rancho Cucamonga, CA 91730 -->
       <div class="mt-8 overflow-hidden rounded-2xl border border-border">
-        <!-- [TODO: real address] Replace the src below with an embed for the real location. -->
         <iframe
-          title="Map to Drum Sync Academy [TODO: real address]"
-          src="https://www.google.com/maps?q=New+York&output=embed"
+          title="Map to Drum Sync Academy, 9559 Center Ave Ste A, Rancho Cucamonga, CA 91730"
+          src="https://www.google.com/maps?q=Drum+Sync+Academy,+9559+Center+Ave+Ste+A,+Rancho+Cucamonga,+CA+91730&output=embed"
           class="h-64 w-full border-0"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
