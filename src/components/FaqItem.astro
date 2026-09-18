@@ -1,0 +1,33 @@
+---
+/**
+ * FaqItem.astro
+ * Accordion built on native <details>/<summary> -- no JavaScript required.
+ * Question via prop, answer via the default slot.
+ */
+interface Props {
+  question: string;
+}
+const { question } = Astro.props;
+---
+
+<details class="group rounded-xl border border-border bg-surface px-5 open:bg-elevated">
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-display text-base font-semibold text-white marker:hidden"
+  >
+    {question}
+    <svg
+      class="h-5 w-5 shrink-0 text-gray-muted transition-transform group-open:rotate-45"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  </summary>
+  <div class="pb-5 text-sm leading-relaxed text-gray-light">
+    <slot />
+  </div>
+</details>

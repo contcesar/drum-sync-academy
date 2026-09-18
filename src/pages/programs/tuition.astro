@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../../components/Button.astro';
+
+// TODO: confirm real tuition figures.
+const rows = [
+  { program: 'DSA Classes — Group', unit: 'per month', price: '$29.99' },
+  { program: 'DSA Classes — Small-Format', unit: 'per month', price: '$49.99' },
+  { program: 'DSA Classes — One-on-One', unit: 'per session', price: '$65.00' },
+  { program: 'PDI', unit: 'per block', price: 'TODO' },
+  { program: 'Assessment', unit: 'one-time', price: '$25.00' },
+];
+
+const options = [
+  'Pay monthly, every six months, or annually.',
+  'Longer commitments lock in a lower effective rate.',
+  'Assessment fee is applied to your first month on enrollment.',
+  'Secure checkout handled by Stripe. No card details stored here.',
+];
+---
+
+<BaseLayout
+  title="Tuition"
+  description="Tuition breakdown and payment options at Drum Sync Academy."
+>
+  <section class="border-b border-border bg-surface">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <h1 class="text-4xl font-bold text-white sm:text-5xl">Tuition</h1>
+      <p class="mt-5 max-w-2xl text-lg text-gray-light">
+        A clear breakdown of what training costs and how you can pay. Figures
+        below are placeholders.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+    <div class="overflow-x-auto rounded-2xl border border-border bg-surface">
+      <table class="w-full min-w-[480px] border-collapse text-left">
+        <thead>
+          <tr class="border-b border-border text-sm text-gray-muted">
+            <th class="px-6 py-4 font-semibold">Program</th>
+            <th class="px-6 py-4 font-semibold">Billing</th>
+            <th class="px-6 py-4 text-right font-semibold">Price</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-light">
+          {
+            rows.map((r) => (
+              <tr class="border-b border-border last:border-0">
+                <td class="px-6 py-4 font-medium text-white">{r.program}</td>
+                <td class="px-6 py-4 text-sm text-gray-muted">{r.unit}</td>
+                <td class="px-6 py-4 text-right font-semibold">{r.price}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold text-white">Payment options</h2>
+      <ul class="mt-5 space-y-3 text-gray-light">
+        {
+          options.map((o) => (
+            <li class="flex items-start gap-2">
+              <svg class="mt-1 h-4 w-4 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z"/></svg>
+              <span>{o}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="mt-12 flex flex-wrap gap-4">
+      <Button href="/payment" variant="primary">Continue to payment</Button>
+      <Button href="/book-assessment" variant="secondary">Book Your Assessment</Button>
+    </div>
+  </section>
+</BaseLayout>

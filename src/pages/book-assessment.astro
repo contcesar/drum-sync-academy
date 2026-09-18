@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const fieldBase =
+  'w-full rounded-xl border border-border bg-elevated px-4 py-3 text-gray-light placeholder:text-gray-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red';
+const labelBase = 'block text-sm font-medium text-gray-light';
+
+const expectations = [
+  'A relaxed conversation about your goals and experience.',
+  'Time behind a kit so we can hear where you are.',
+  'A recommended format, schedule, and plan, with no pressure.',
+];
+---
+
+<BaseLayout
+  title="Book Your Assessment"
+  description="Book a free assessment at Drum Sync Academy and find the right format for your goals."
+>
+  <section class="border-b border-border bg-surface">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <h1 class="text-4xl font-bold text-white sm:text-5xl">Book Your Assessment</h1>
+      <p class="mt-5 max-w-2xl text-lg text-gray-light">
+        The assessment is a free, no-pressure session to find the right fit.
+        Tell us a bit about you and pick a time that works.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2">
+    <!-- What to expect -->
+    <div>
+      <h2 class="text-2xl font-bold text-white">What to expect</h2>
+      <ul class="mt-6 space-y-4 text-gray-light">
+        {
+          expectations.map((e) => (
+            <li class="flex items-start gap-3">
+              <svg class="mt-0.5 h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z"/></svg>
+              <span>{e}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-8 text-sm text-gray-muted">
+        TODO: placeholder. Add what to bring, how long it takes, and where to park.
+      </p>
+
+      {/*
+        CALENDLY OPTION:
+        To let visitors self-schedule, swap this form for a Calendly embed.
+        Add the widget script in BaseLayout <head> and drop the embed here:
+
+        <div class="calendly-inline-widget"
+             data-url="https://calendly.com/YOUR-HANDLE/assessment"
+             style="min-width:320px;height:700px"></div>
+        <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+      */}
+    </div>
+
+    <!-- Netlify assessment form -->
+    <div>
+      <h2 class="text-2xl font-bold text-white">Request your session</h2>
+      <form
+        name="assessment"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        action="/thank-you"
+        class="mt-6 space-y-5"
+      >
+        <input type="hidden" name="form-name" value="assessment" />
+        <p class="hidden">
+          <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+        </p>
+
+        <div>
+          <label for="a-name" class={labelBase}>Name</label>
+          <input id="a-name" name="name" type="text" required autocomplete="name" class={`mt-2 ${fieldBase}`} />
+        </div>
+        <div>
+          <label for="a-email" class={labelBase}>Email</label>
+          <input id="a-email" name="email" type="email" required autocomplete="email" class={`mt-2 ${fieldBase}`} />
+        </div>
+        <div>
+          <label for="a-phone" class={labelBase}>Phone</label>
+          <input id="a-phone" name="phone" type="tel" autocomplete="tel" class={`mt-2 ${fieldBase}`} />
+        </div>
+        <div>
+          <label for="a-program" class={labelBase}>Program of interest</label>
+          <select id="a-program" name="program" class={`mt-2 ${fieldBase}`}>
+            <option value="DSA Classes">DSA Classes</option>
+            <option value="PDI">PDI</option>
+            <option value="Not sure yet">Not sure yet</option>
+          </select>
+        </div>
+        <div>
+          <label for="a-experience" class={labelBase}>Drumming experience</label>
+          <textarea id="a-experience" name="experience" rows="4" placeholder="Tell us where you're at and what you'd like to work on." class={`mt-2 ${fieldBase}`}></textarea>
+        </div>
+        <div>
+          <label for="a-datetime" class={labelBase}>Preferred date &amp; time</label>
+          <input id="a-datetime" name="preferred_datetime" type="text" placeholder="e.g. Saturday mornings, or May 5 at 4pm" class={`mt-2 ${fieldBase}`} />
+        </div>
+
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center rounded-xl bg-red px-6 py-3 font-display text-base font-semibold text-white transition-colors hover:bg-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
+        >
+          Request assessment
+        </button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>

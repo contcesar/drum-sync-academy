@@ -1,0 +1,24 @@
+# Netlify configuration for Drum Sync Academy
+# Deploy: connect this repo in the Netlify dashboard (or `netlify deploy`).
+# Netlify auto-detects Astro, but these settings make it explicit.
+
+[build]
+  command = "astro build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Security + caching headers.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Long-cache the hashed, immutable build assets.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

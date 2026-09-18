@@ -1,0 +1,44 @@
+[
+  {
+    "date": "2026-08-15",
+    "time": "10:00 AM",
+    "title": "Summer Groove Clinic",
+    "description": "TODO: placeholder. A hands-on clinic focused on pocket, timekeeping, and playing to a click.",
+    "cta": { "label": "See recap", "href": "/events" }
+  },
+  {
+    "date": "2026-09-06",
+    "time": "1:00 PM",
+    "title": "Open House & Facility Tour",
+    "description": "TODO: placeholder. Walk the rooms, meet the instructors, and try the kits before you enroll.",
+    "cta": { "label": "Learn more", "href": "/about" }
+  },
+  {
+    "date": "2026-10-04",
+    "time": "6:30 PM",
+    "title": "Student Showcase Night",
+    "description": "TODO: placeholder. Current students perform a short set in front of a live room.",
+    "cta": { "label": "Reserve a seat", "href": "/contact" }
+  },
+  {
+    "date": "2026-10-22",
+    "time": "7:00 PM",
+    "title": "Rudiments Deep-Dive Workshop",
+    "description": "TODO: placeholder. A focused session breaking down hand technique and stick control.",
+    "cta": { "label": "Register", "href": "/book-assessment" }
+  },
+  {
+    "date": "2026-11-14",
+    "time": "11:00 AM",
+    "title": "Recording Day: Track a Song",
+    "description": "TODO: placeholder. Bring a chart and leave with a recorded take from the tracking room.",
+    "cta": { "label": "Sign up", "href": "/book-assessment" }
+  },
+  {
+    "date": "2026-12-12",
+    "time": "5:00 PM",
+    "title": "Winter Recital",
+    "description": "TODO: placeholder. End-of-term recital celebrating the progress made this season.",
+    "cta": { "label": "Details soon", "href": "/events" }
+  }
+]

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: update the host to your real domain before launch.
+Sitemap: https://drumsyncacademy.netlify.app/sitemap-index.xml

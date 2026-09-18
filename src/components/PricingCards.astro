@@ -1,0 +1,114 @@
+---
+/**
+ * PricingCards.astro
+ * Three-tier pricing grid reused on Home, Programs, and Payment.
+ *
+ * EDIT PRICING HERE -> the `tiers` array below is the single source of truth
+ * for tier names, prices, features, and Stripe links. No skill-level labels;
+ * tiers are named by commitment.
+ *
+ * Props:
+ *   variant = "cta"    -> button links to /payment (default)
+ *   variant = "enroll" -> button links to the tier's Stripe Payment Link
+ */
+interface Props {
+  variant?: 'cta' | 'enroll';
+}
+const { variant = 'cta' } = Astro.props;
+
+// TODO: confirm real tier names and prices.
+const tiers = [
+  {
+    name: 'Monthly',
+    price: '$29.99',
+    period: '/mo',
+    features: [
+      'Rolling month-to-month access',
+      'Coached in-person sessions',
+      'Kit and practice room time',
+      'Cancel anytime',
+    ],
+    // TODO: paste real Stripe Payment Link (see README).
+    stripe: 'STRIPE_LINK_MONTHLY',
+    featured: false,
+  },
+  {
+    name: '6-Month',
+    price: '$149.95',
+    period: '/6mo',
+    features: [
+      'Everything in Monthly',
+      'Best value for steady progress',
+      'Priority scheduling',
+      'Progress check-ins',
+      'Locked-in rate for 6 months',
+    ],
+    // TODO: paste real Stripe Payment Link (see README).
+    stripe: 'STRIPE_LINK_6MONTH',
+    featured: true,
+  },
+  {
+    name: 'Annual',
+    price: '$269.90',
+    period: '/yr',
+    features: [
+      'Everything in 6-Month',
+      'Lowest effective monthly rate',
+      'Guest passes for events',
+      'Annual recital slot',
+    ],
+    // TODO: paste real Stripe Payment Link (see README).
+    stripe: 'STRIPE_LINK_ANNUAL',
+    featured: false,
+  },
+];
+
+const ctaFor = (t: (typeof tiers)[number]) =>
+  variant === 'enroll'
+    ? { href: t.stripe, label: 'Enroll' }
+    : { href: '/payment', label: 'Get started' };
+---
+
+<div class="grid gap-6 md:grid-cols-3">
+  {
+    tiers.map((t) => {
+      const cta = ctaFor(t);
+      return (
+        <div
+          class={`relative flex flex-col rounded-2xl border bg-surface p-8 shadow-lg shadow-black/20 ${t.featured ? 'border-red' : 'border-border'}`}
+        >
+          {t.featured && (
+            <span class="absolute -top-3 left-8 rounded-full bg-red px-3 py-1 text-xs font-semibold text-white">
+              Most popular
+            </span>
+          )}
+          <h3 class="font-display text-xl font-bold text-white">{t.name}</h3>
+          <p class="mt-4 flex items-baseline gap-1">
+            <span class="text-4xl font-bold text-white">{t.price}</span>
+            <span class="text-sm text-gray-muted">{t.period}</span>
+          </p>
+          <ul class="mt-6 flex-1 space-y-3 text-sm text-gray-light">
+            {t.features.map((f) => (
+              <li class="flex items-start gap-2">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z" />
+                </svg>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={cta.href}
+            class={`mt-8 inline-flex items-center justify-center rounded-xl px-6 py-3 font-display text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red ${
+              t.featured
+                ? 'bg-red text-white hover:bg-red-hover'
+                : 'border border-border text-gray-light hover:border-gray-muted hover:text-white'
+            }`}
+          >
+            {cta.label}
+          </a>
+        </div>
+      );
+    })
+  }
+</div>

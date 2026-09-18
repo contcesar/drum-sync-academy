@@ -1,0 +1,61 @@
+---
+/**
+ * EventCard.astro
+ * Date, title, blurb, optional CTA. Pass `past` to visually mark past events.
+ */
+interface Props {
+  date: string; // ISO yyyy-mm-dd
+  time?: string;
+  title: string;
+  description?: string;
+  cta?: { label: string; href: string } | null;
+  past?: boolean;
+}
+const { date, time, title, description, cta, past = false } = Astro.props;
+
+const d = new Date(`${date}T00:00:00`);
+const month = d.toLocaleDateString('en-US', { month: 'short' });
+const day = d.toLocaleDateString('en-US', { day: 'numeric' });
+const full = d.toLocaleDateString('en-US', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article
+  class={`flex h-full flex-col rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-gray-muted ${past ? 'opacity-70' : ''}`}
+>
+  <div class="flex items-center gap-4">
+    <div class="grid h-16 w-16 shrink-0 place-items-center rounded-xl border border-border bg-elevated text-center">
+      <span class="text-xs font-semibold uppercase tracking-wide text-red">{month}</span>
+      <span class="font-display text-2xl font-bold leading-none text-white">{day}</span>
+    </div>
+    <div>
+      <time datetime={date} class="text-xs text-gray-muted">{full}{time ? ` · ${time}` : ''}</time>
+      {
+        past && (
+          <span class="ml-2 rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wide text-gray-muted">
+            Past
+          </span>
+        )
+      }
+      <h3 class="mt-1 font-display text-lg font-bold text-white">{title}</h3>
+    </div>
+  </div>
+
+  {description && <p class="mt-4 flex-1 text-sm text-gray-light">{description}</p>}
+
+  {
+    cta && (
+      <a
+        href={cta.href}
+        class="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-red hover:text-red-hover"
+      >
+        {cta.label}
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4l6 6-6 6"/></svg>
+      </a>
+    )
+  }
+</article>

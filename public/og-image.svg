@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0E0E10"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#E11D2E"/>
+  <g transform="translate(80 250)" fill="none" stroke="#E11D2E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="45" cy="22" rx="42" ry="14"/>
+    <path d="M3 22v56c0 7.7 18.8 14 42 14s42-6.3 42-14V22"/>
+  </g>
+  <text x="220" y="300" font-family="Space Grotesk, Arial, sans-serif" font-size="76" font-weight="700" fill="#FAFAFA">Drum Sync Academy</text>
+  <text x="220" y="360" font-family="Inter, Arial, sans-serif" font-size="34" fill="#D4D4D8">In-person drum education, built around you.</text>
+</svg>

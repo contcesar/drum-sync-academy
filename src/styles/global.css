@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+  Design tokens (Tailwind v4 uses CSS-based theme config via @theme).
+  These generate utilities like: bg-charcoal, text-gray-muted, border-border,
+  bg-red, hover:bg-red-hover, font-display, font-body, etc.
+  Edit a value here and it updates everywhere it is used.
+*/
+@theme {
+  --color-charcoal: #0e0e10;
+  --color-surface: #17171a;
+  --color-elevated: #1f1f23;
+  --color-border: #2a2a2f;
+  --color-gray-muted: #9a9aa2;
+  --color-gray-light: #d4d4d8;
+  --color-red: #e11d2e;
+  --color-red-hover: #c11827;
+  --color-white: #fafafa;
+
+  /* Real fallback stacks so text renders before web fonts load. */
+  --font-display: "Space Grotesk", "Archivo", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-charcoal);
+  }
+
+  body {
+    background-color: var(--color-charcoal);
+    color: var(--color-gray-light);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--color-white);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  /* Visible, high-contrast focus states everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Respect users who prefer reduced motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
