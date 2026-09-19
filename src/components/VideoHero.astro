@@ -30,7 +30,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="relative isolate overflow-hidden bg-charcoal">
+<section class="relative isolate flex min-h-[88vh] items-center overflow-hidden bg-charcoal">
   <!-- Background media -->
   <div class="absolute inset-0 -z-10">
     <!-- Video shows only when motion is allowed -->
@@ -54,11 +54,13 @@ const {
       class="hidden h-full w-full object-cover motion-reduce:block"
       aria-hidden="true"
     />
-    <!-- Dark overlay for text contrast -->
-    <div class="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/75 to-charcoal"></div>
+    <!-- Lighter overlays: darken the left (behind the text) and blend the
+         bottom into the page, while keeping the right/top of the video clear. -->
+    <div class="absolute inset-0 bg-gradient-to-r from-charcoal/80 via-charcoal/35 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-charcoal via-transparent to-transparent"></div>
   </div>
 
-  <div class="mx-auto max-w-6xl px-4 py-28 sm:px-6 sm:py-36 lg:py-44">
+  <div class="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-28">
     <div class="max-w-2xl">
       <h1 class="text-5xl font-bold text-white sm:text-6xl lg:text-7xl">
         {heading}
