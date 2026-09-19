@@ -1,8 +1,8 @@
-PLACEHOLDER MEDIA — replace before launch.
+Hero media
+- dsa.mp4         The home hero background video (real). Muted, autoplay, loop.
+- hero-poster.jpg Poster/fallback still, extracted from dsa.mp4. Shown before
+                  the video loads and when a visitor prefers reduced motion.
 
-- hero.mp4       TODO: real background video for the home hero.
-                 Target size a few MB (see project README). H.264/MP4,
-                 muted, ~10-20s loop, 1080p is plenty.
-- hero-poster.jpg TODO: real poster image (shown before the video loads and
-                 when a visitor prefers reduced motion). Match the video's
-                 first frame. 1600x900 or similar 16:9.
+To swap the video later: replace public/dsa.mp4 (keep the name), or upload a
+new file and update `videoSrc` in src/components/VideoHero.astro. Regenerate the
+poster from any frame if you change the video.

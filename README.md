@@ -59,7 +59,7 @@ Everything below is a clearly marked placeholder (search the project for `TODO`)
 |---|---|
 | Company logo | `public/drum-sync-logo.png` (replace this file; used in the nav and footer) |
 | Business name, address, phone, email, hours, social links | `src/data/site.js` |
-| Hero video + poster | `public/hero.mp4`, `public/hero-poster.jpg` (see `public/README-media.txt`) |
+| Hero video + poster | `public/dsa.mp4`, `public/hero-poster.jpg` (see `public/README-media.txt`) |
 | Pricing tier names, prices, features | `src/components/PricingCards.astro` (`tiers` array at the top) |
 | **Stripe Payment Links** | `src/components/PricingCards.astro` (`stripe:` on each tier) and `src/pages/payment.astro` (`STRIPE_LINK_ASSESSMENT`) |
 | Events | `src/data/events.json` |
