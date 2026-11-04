@@ -82,12 +82,26 @@ const experienceLines = [
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4 lg:sticky lg:top-28">
-        {/* TODO(DSA-media): studio interior wide shot (rooms, kits, lighting). */}
-        <MediaSlot alt="The DSA studio" label="Studio interior" aspect="4/3" class="col-span-2" />
-        {/* TODO(DSA-media): archival / early-years DSA photo, if available. */}
-        <MediaSlot alt="DSA in its early years" label="DSA through the years" aspect="1/1" />
-        {/* TODO(DSA-media): students performing at a DSA gig or community event. */}
-        <MediaSlot alt="DSA drummers performing" label="Performance" aspect="1/1" />
+        {/* Reuses homepage photos. Swap in a true studio-interior wide shot or an
+            archival early-years photo here if DSA has them. */}
+        <MediaSlot
+          src="/dsa-community-stage.jpg"
+          alt="DSA drummers, teens and adults, holding drumsticks on the studio stage under the DSA sign"
+          aspect="4/3"
+          position="center top"
+          class="col-span-2"
+        />
+        <MediaSlot
+          src="/dsa-kids-and-families.jpg"
+          alt="Kids, parents, and DSA instructors holding up drumsticks on the studio stage"
+          aspect="1/1"
+        />
+        <MediaSlot
+          src="/dsa-live-performance-outdoor.jpg"
+          alt="A drummer grinning at the camera while playing a white drum kit on an outdoor stage"
+          aspect="1/1"
+          position="center top"
+        />
       </div>
     </div>
   </section>
