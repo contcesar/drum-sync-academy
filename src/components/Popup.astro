@@ -1,22 +1,29 @@
 ---
+import { TOUR_URL } from '../data/site.js';
+
 /**
  * Popup.astro
- * Timed modal. Rendered by BaseLayout only when `popup` is true
- * (BaseLayout enables it on Home). To run it site-wide, flip the default
- * in BaseLayout.astro to `popup = true` -- a one-line change.
+ * Timed modal. DISABLED for launch via `features.popup` in src/data/site.js.
+ * Kept for future promotions, events, email signups, or seasonal campaigns.
+ *
+ * It renders only when BOTH `features.popup` is true AND the page passes
+ * `popup={true}` to BaseLayout (Home does). Edit the copy below per campaign.
  *
  * Dismissal is stored in localStorage so it stays hidden for DISMISS_DAYS.
  */
 
 // ---- Config: edit these ----
-const SESSION_NUMBER = 4; // shown in the CTA label
-const CTA_HREF = '/book-assessment'; // where the CTA points
+const EYEBROW = 'Studio Tours';
+const TITLE = 'See DSA in person';
+const BODY =
+  'All new DSA drummers begin with a Studio Tour. Tours are scheduled by appointment.';
+const CTA_LABEL = 'Request a Studio Tour';
+const CTA_HREF = TOUR_URL; // where the CTA points
 const DELAY_MS = 6000; // ~6 seconds after load
 const DISMISS_DAYS = 7; // how long a dismissal lasts
 const STORAGE_KEY = 'dsa-popup-dismissed';
 // ----------------------------
 
-const ctaLabel = `Session ${SESSION_NUMBER} Enroll Now`;
 ---
 
 <div
@@ -46,20 +53,15 @@ const ctaLabel = `Session ${SESSION_NUMBER} Enroll Now`;
       <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
     </button>
 
-    <p class="text-sm font-semibold uppercase tracking-wide text-red">Enrolling now</p>
-    <h2 id="dsa-popup-title" class="mt-2 text-2xl font-bold text-white">
-      Seats are filling for the next session
-    </h2>
-    <p class="mt-3 text-gray-light">
-      Lock in your spot and book a free assessment. We'll match you to the
-      format and schedule that fits.
-    </p>
+    <p class="text-sm font-semibold uppercase tracking-wide text-red">{EYEBROW}</p>
+    <h2 id="dsa-popup-title" class="mt-2 text-2xl font-bold text-white">{TITLE}</h2>
+    <p class="mt-3 text-gray-light">{BODY}</p>
 
     <a
       href={CTA_HREF}
       class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-red px-6 py-3 font-display text-base font-semibold text-white transition-colors hover:bg-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red"
     >
-      {ctaLabel}
+      {CTA_LABEL}
     </a>
   </div>
 </div>

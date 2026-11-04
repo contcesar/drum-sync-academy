@@ -3,17 +3,19 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Popup from '../components/Popup.astro';
-import { site } from '../data/site.js';
+import { site, features } from '../data/site.js';
 
 interface Props {
   title?: string;
   description?: string;
   /**
-   * Show the timed popup on this page.
-   * To run the popup site-wide, change the default here to `true`.
+   * Allow the timed popup on this page. It only renders when
+   * `features.popup` in src/data/site.js is also true (currently off).
    */
   popup?: boolean;
   ogImage?: string;
+  /** Extra JSON-LD structured data object(s) for this page. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -21,7 +23,10 @@ const {
   description = site.description,
   popup = false,
   ogImage = '/og-image.svg',
+  jsonLd,
 } = Astro.props;
+
+const showPopup = popup && features.popup;
 
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -67,6 +72,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
 
   <body class="flex min-h-screen flex-col bg-charcoal text-gray-light">
@@ -84,6 +91,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
     <Footer />
 
-    {popup && <Popup />}
+    {showPopup && <Popup />}
   </body>
 </html>

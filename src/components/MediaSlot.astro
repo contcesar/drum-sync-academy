@@ -1,0 +1,118 @@
+---
+/**
+ * MediaSlot.astro
+ * A responsive photo/video slot with a fixed aspect ratio.
+ *
+ *  - With `src`: renders a lazy-loaded <img>, or a <video> with poster.
+ *  - Without `src`: renders a labeled placeholder (role="img" + alt text) so
+ *    the layout is final and the team can see exactly what footage goes where.
+ *
+ * Put a `TODO(DSA-media)` comment next to each usage describing the footage.
+ *
+ * Props:
+ *   type     'image' | 'video'                    (default 'image')
+ *   src      media URL; omit for a placeholder
+ *   poster   poster image for video
+ *   alt      alt text (images) / accessible label (video + placeholders)
+ *   label    short placeholder caption, e.g. "Adult group class"
+ *   aspect   CSS aspect-ratio, e.g. '16/9', '4/3', '1/1', '3/4' (default 16/9)
+ *   ambient  video only: autoplay muted loop, no controls (decorative b-roll).
+ *            Hidden under prefers-reduced-motion (poster shown instead).
+ *   eager    load immediately instead of lazily (above-the-fold only)
+ */
+interface Props {
+  type?: 'image' | 'video';
+  src?: string;
+  poster?: string;
+  alt: string;
+  label?: string;
+  aspect?: string;
+  ambient?: boolean;
+  eager?: boolean;
+  class?: string;
+}
+
+const {
+  type = 'image',
+  src,
+  poster,
+  alt,
+  label,
+  aspect = '16/9',
+  ambient = false,
+  eager = false,
+  class: className = '',
+} = Astro.props;
+
+const frame = `relative overflow-hidden rounded-2xl border border-border bg-elevated ${className}`;
+---
+
+<figure class={frame} style={`aspect-ratio: ${aspect};`}>
+  {
+    !src ? (
+      <div
+        role="img"
+        aria-label={alt}
+        class="absolute inset-0 grid place-items-center bg-[repeating-linear-gradient(135deg,transparent_0_14px,rgba(255,255,255,0.025)_14px_28px)] p-4 text-center"
+      >
+        <span class="flex flex-col items-center gap-2 text-gray-muted">
+          {type === 'video' ? (
+            <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="2.5" y="5" width="14" height="14" rx="2" />
+              <path d="m16.5 10 5-3v10l-5-3" />
+            </svg>
+          ) : (
+            <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" />
+              <circle cx="9" cy="10" r="2" />
+              <path d="m21 16-5-5-9 9" />
+            </svg>
+          )}
+          <span class="text-xs font-semibold uppercase tracking-wide">
+            {type === 'video' ? 'Video coming soon' : 'Photo coming soon'}
+          </span>
+          {label && <span class="text-xs">{label}</span>}
+        </span>
+      </div>
+    ) : type === 'video' ? (
+      ambient ? (
+        <>
+          <video
+            class="absolute inset-0 h-full w-full object-cover motion-reduce:hidden"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload={eager ? 'metadata' : 'none'}
+            poster={poster}
+            aria-label={alt}
+          >
+            <source src={src} type="video/mp4" />
+          </video>
+          {poster && (
+            <img src={poster} alt={alt} loading="lazy" decoding="async" class="absolute inset-0 hidden h-full w-full object-cover motion-reduce:block" />
+          )}
+        </>
+      ) : (
+        <video
+          class="absolute inset-0 h-full w-full bg-black object-contain"
+          controls
+          playsinline
+          preload="none"
+          poster={poster}
+          aria-label={alt}
+        >
+          <source src={src} type="video/mp4" />
+        </video>
+      )
+    ) : (
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    )
+  }
+</figure>

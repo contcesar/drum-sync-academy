@@ -1,0 +1,324 @@
+---
+/**
+ * TourForm.astro
+ * The Studio Tour request form: the site's main conversion point.
+ *
+ * - Fields, labels, and options come from src/data/tourForm.js.
+ * - Submission goes through src/scripts/forms.ts (single integration point;
+ *   currently Netlify Forms). Without JS it falls back to a normal POST that
+ *   Netlify handles and redirects to /thank-you.
+ * - Client-side validation with inline, aria-linked error messages.
+ * - Honeypot spam protection (netlify-honeypot="bot-field").
+ * - No calendar / auto-booking on purpose: scheduling is handled personally.
+ */
+import { site } from '../data/site.js';
+import { tourForm as f, tourFormCopy, TOUR_FORM_NAME, MIN_AGE } from '../data/tourForm.js';
+
+const field =
+  'mt-2 w-full rounded-xl border border-border bg-elevated px-4 py-3 text-gray-light placeholder:text-gray-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red aria-[invalid=true]:border-red';
+const label = 'block text-sm font-medium text-white';
+const legend = 'text-sm font-medium text-white';
+const req = '<span class="text-red" aria-hidden="true">*</span>';
+const choice =
+  'flex cursor-pointer items-center gap-3 rounded-xl border border-border bg-elevated px-4 py-3 text-sm text-gray-light transition-colors hover:border-gray-muted has-[:checked]:border-red has-[:checked]:text-white has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-red';
+const box = 'h-4 w-4 shrink-0 accent-[var(--color-red)]';
+const err = 'mt-2 hidden text-sm font-medium text-red-300';
+---
+
+<div id="tour-form-wrap">
+  <form
+    id="tour-form"
+    name={TOUR_FORM_NAME}
+    method="POST"
+    action="/thank-you"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+    novalidate
+    class="space-y-7"
+  >
+    <input type="hidden" name="form-name" value={TOUR_FORM_NAME} />
+    <!-- Honeypot: hidden from humans, catches bots. -->
+    <p class="hidden" aria-hidden="true">
+      <label>Don’t fill this out if you’re human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+    </p>
+
+    <p class="text-sm text-gray-muted">Fields marked <span class="text-red">*</span> are required.</p>
+
+    <!-- Status for screen readers (errors on submit). -->
+    <p id="tf-status" class="hidden rounded-xl border border-red/60 bg-red/10 px-4 py-3 text-sm text-white" role="alert"></p>
+
+    <!-- 1. Name -->
+    <div>
+      <label for="tf-name" class={label}>{f.contactName.label} <Fragment set:html={req} /></label>
+      <p id="tf-name-hint" class="mt-1 text-xs text-gray-muted">{f.contactName.hint}</p>
+      <input id="tf-name" name={f.contactName.name} type="text" required autocomplete="name"
+        aria-describedby="tf-name-hint tf-name-error" class={field} />
+      <p id="tf-name-error" class={err}></p>
+    </div>
+
+    <!-- 2 + 3. Email / phone -->
+    <div class="grid gap-7 sm:grid-cols-2 sm:gap-5">
+      <div>
+        <label for="tf-email" class={label}>{f.email.label} <Fragment set:html={req} /></label>
+        <input id="tf-email" name={f.email.name} type="email" required autocomplete="email" inputmode="email"
+          aria-describedby="tf-email-error" class={field} />
+        <p id="tf-email-error" class={err}></p>
+      </div>
+      <div>
+        <label for="tf-phone" class={label}>{f.phone.label} <Fragment set:html={req} /></label>
+        <input id="tf-phone" name={f.phone.name} type="tel" required autocomplete="tel" inputmode="tel"
+          aria-describedby="tf-phone-error" class={field} />
+        <p id="tf-phone-error" class={err}></p>
+      </div>
+    </div>
+
+    <!-- 4. Who is the drummer? -->
+    <fieldset>
+      <legend class={legend}>{f.drummer.label}</legend>
+      <div class="mt-2 grid gap-3 sm:grid-cols-3">
+        {
+          f.drummer.options.map((o, i) => (
+            <label class={choice}>
+              <input type="radio" name={f.drummer.name} value={o.value} class={box} id={`tf-drummer-${i}`} />
+              {o.label}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 5. Age -->
+    <div>
+      <label for="tf-age" class={label}>
+        <span id="tf-age-label" data-labels={JSON.stringify(f.age.labels)}>{f.age.labels.default}</span>
+        <Fragment set:html={req} />
+      </label>
+      <input id="tf-age" name={f.age.name} type="number" required min="1" max="120" step="1" inputmode="numeric"
+        aria-describedby="tf-age-note tf-age-error" class={`${field} sm:max-w-40`} data-min-age={MIN_AGE} />
+      <p id="tf-age-error" class={err}></p>
+      <div aria-live="polite">
+        <p id="tf-age-note" class="mt-3 hidden rounded-xl border border-border bg-surface px-4 py-3 text-sm text-gray-light">
+          {f.age.underMinNote}
+        </p>
+      </div>
+    </div>
+
+    <!-- 6. Experience -->
+    <div>
+      <label for="tf-experience" class={label}>{f.experience.label} <Fragment set:html={req} /></label>
+      <select id="tf-experience" name={f.experience.name} required aria-describedby="tf-experience-error" class={field}>
+        <option value="">Select one…</option>
+        {f.experience.options.map((o) => <option value={o}>{o}</option>)}
+      </select>
+      <p id="tf-experience-error" class={err}></p>
+    </div>
+
+    <!-- 7. Reason -->
+    <div>
+      <label for="tf-reason" class={label}>{f.reason.label}</label>
+      <select id="tf-reason" name={f.reason.name} class={field}>
+        <option value="">Select one…</option>
+        {f.reason.options.map((o) => <option value={o}>{o}</option>)}
+      </select>
+      <div id="tf-reason-other-wrap" class="mt-3 hidden">
+        <label for="tf-reason-other" class={label}>{f.reason.otherLabel}</label>
+        <input id="tf-reason-other" name={f.reason.otherName} type="text" class={field} />
+      </div>
+    </div>
+
+    <!-- 8. Program interest -->
+    <fieldset>
+      <legend class={legend}>{f.programs.label}</legend>
+      <div class="mt-2 grid gap-3 sm:grid-cols-2">
+        {
+          f.programs.options.map((o, i) => (
+            <label class={choice}>
+              <input type="checkbox" name={f.programs.name} value={o} class={box} id={`tf-program-${i}`} />
+              {o}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 9. Availability -->
+    <fieldset>
+      <legend class={legend}>{f.availability.label}</legend>
+      <div class="mt-2 grid gap-3 sm:grid-cols-3">
+        {
+          f.availability.options.map((o, i) => (
+            <label class={choice}>
+              <input type="checkbox" name={f.availability.name} value={o} class={box} id={`tf-avail-${i}`} />
+              {o}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <!-- 10. Notes -->
+    <div>
+      <label for="tf-notes" class={label}>{f.notes.label} <span class="font-normal text-gray-muted">(optional)</span></label>
+      <textarea id="tf-notes" name={f.notes.name} rows="4" class={field}></textarea>
+    </div>
+
+    <div>
+      <button
+        type="submit"
+        id="tf-submit"
+        class="inline-flex w-full items-center justify-center rounded-xl bg-red px-6 py-4 font-display text-base font-semibold uppercase tracking-wide text-white transition-colors hover:bg-red-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red disabled:opacity-60 sm:w-auto"
+      >
+        Request a Studio Tour
+      </button>
+      <p class="mt-3 text-sm text-gray-muted">
+        We personally review every request and typically respond within 48 hours.
+      </p>
+    </div>
+  </form>
+
+  <!-- Success state (shown after a successful submit). -->
+  <div id="tf-success" class="hidden rounded-2xl border border-red bg-surface p-8 text-center" tabindex="-1">
+    <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-red text-white" aria-hidden="true">
+      <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </span>
+    <h2 class="mt-6 text-2xl font-bold text-white">Request received</h2>
+    <p class="mt-3 text-lg text-gray-light">{tourFormCopy.success}</p>
+  </div>
+
+  <!-- Hidden template for the network-error message. -->
+  <template id="tf-error-msg">
+    {tourFormCopy.error} <a class="underline" href={site.phoneHref}>{site.phone}</a> · <a class="underline" href={`mailto:${site.email}`}>{site.email}</a>
+  </template>
+</div>
+
+<script>
+  import { submitForm } from '../scripts/forms';
+
+  const form = document.getElementById('tour-form') as HTMLFormElement | null;
+
+  if (form) {
+    const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
+    const status = $('tf-status')!;
+    const submitBtn = $<HTMLButtonElement>('tf-submit')!;
+    const age = $<HTMLInputElement>('tf-age')!;
+    const ageNote = $('tf-age-note')!;
+    const ageLabel = $('tf-age-label')!;
+    const reason = $<HTMLSelectElement>('tf-reason')!;
+    const reasonOtherWrap = $('tf-reason-other-wrap')!;
+    const minAge = Number(age.dataset.minAge || '8');
+    const ageLabels: Record<string, string> = JSON.parse(ageLabel.dataset.labels || '{}');
+    let attempted = false;
+
+    // ---- Conditional UI ----
+    const syncAgeNote = () => {
+      const n = Number(age.value);
+      ageNote.classList.toggle('hidden', !(age.value !== '' && n > 0 && n < minAge));
+    };
+    age.addEventListener('input', syncAgeNote);
+
+    form.querySelectorAll<HTMLInputElement>('input[name="drummer"]').forEach((r) =>
+      r.addEventListener('change', () => {
+        ageLabel.textContent = ageLabels[r.value] || ageLabels.default;
+      }),
+    );
+
+    reason.addEventListener('change', () => {
+      const other = reason.value === 'Other';
+      reasonOtherWrap.classList.toggle('hidden', !other);
+      if (!other) ($<HTMLInputElement>('tf-reason-other')!).value = '';
+    });
+
+    // ---- Validation ----
+    type Check = { el: HTMLInputElement | HTMLSelectElement; msg: () => string | null };
+    const v = (id: string) => $<HTMLInputElement>(id)!;
+    const checks: Check[] = [
+      { el: v('tf-name'), msg: () => (v('tf-name').value.trim() ? null : 'Please enter your name.') },
+      {
+        el: v('tf-email'),
+        msg: () => {
+          const val = v('tf-email').value.trim();
+          if (!val) return 'Please enter your email.';
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? null : 'Please enter a valid email, like name@example.com.';
+        },
+      },
+      {
+        el: v('tf-phone'),
+        msg: () => {
+          const digits = v('tf-phone').value.replace(/\D/g, '');
+          if (!digits) return 'Please enter a phone number.';
+          return digits.length >= 10 ? null : 'Please enter a 10-digit phone number.';
+        },
+      },
+      {
+        el: age,
+        msg: () => {
+          if (age.value === '') return 'Please enter the student’s age.';
+          const n = Number(age.value);
+          return Number.isInteger(n) && n >= 1 && n <= 120 ? null : 'Please enter an age as a whole number.';
+        },
+      },
+      {
+        el: $<HTMLSelectElement>('tf-experience')!,
+        msg: () => ($<HTMLSelectElement>('tf-experience')!.value ? null : 'Please choose a drumming experience level.'),
+      },
+    ];
+
+    const show = (c: Check) => {
+      const m = c.msg();
+      const errEl = $(`${c.el.id}-error`);
+      c.el.setAttribute('aria-invalid', m ? 'true' : 'false');
+      if (errEl) {
+        errEl.textContent = m || '';
+        errEl.classList.toggle('hidden', !m);
+      }
+      return !m;
+    };
+
+    checks.forEach((c) => {
+      const evt = c.el.tagName === 'SELECT' ? 'change' : 'input';
+      c.el.addEventListener(evt, () => attempted && show(c));
+      c.el.addEventListener('blur', () => attempted && show(c));
+    });
+
+    const setStatus = (html: string | null) => {
+      status.classList.toggle('hidden', !html);
+      status.innerHTML = html || '';
+    };
+
+    // ---- Submit ----
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      attempted = true;
+      const failed = checks.filter((c) => !show(c));
+      if (failed.length) {
+        setStatus(
+          failed.length === 1
+            ? 'Please fix the highlighted field below.'
+            : `Please fix the ${failed.length} highlighted fields below.`,
+        );
+        failed[0].el.focus();
+        return;
+      }
+
+      setStatus(null);
+      submitBtn.disabled = true;
+      const original = submitBtn.textContent;
+      submitBtn.textContent = 'Sending…';
+
+      try {
+        await submitForm(form);
+        form.classList.add('hidden');
+        const success = $('tf-success')!;
+        success.classList.remove('hidden');
+        success.focus();
+        success.scrollIntoView({ block: 'center' });
+      } catch {
+        const tpl = document.getElementById('tf-error-msg') as HTMLTemplateElement | null;
+        setStatus(tpl ? tpl.innerHTML : 'Something went wrong. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+      }
+    });
+  }
+</script>

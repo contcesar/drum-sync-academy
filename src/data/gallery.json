@@ -1,0 +1,68 @@
+{
+  "_readme": "Past Events / Gallery. Each item: type ('image' | 'video'), src (leave empty for a placeholder slot), poster (video only), alt, caption, and optional featured: true for the large highlight tile. Items with a src open in a lightbox. TODO(DSA-media): fill every empty src with real event photos/clips.",
+  "highlight": {
+    "title": "Outdoor Performance",
+    "summary": "DSA drummers took the stage outdoors in front of about 400 people. It’s a big part of what the Gig Program is about: learn, prepare, then get out there and play.",
+    "items": [
+      {
+        "type": "video",
+        "src": "",
+        "poster": "",
+        "alt": "Video: DSA drummers performing outdoors for a crowd of about 400",
+        "caption": "Outdoor performance: highlight video",
+        "featured": true
+      },
+      {
+        "type": "image",
+        "src": "",
+        "alt": "Wide shot of the outdoor stage and crowd",
+        "caption": "The crowd"
+      },
+      {
+        "type": "image",
+        "src": "",
+        "alt": "A DSA drummer on the outdoor stage",
+        "caption": "On stage"
+      }
+    ]
+  },
+  "items": [
+    {
+      "type": "image",
+      "src": "",
+      "alt": "DSA student concert",
+      "caption": "Student concert"
+    },
+    {
+      "type": "image",
+      "src": "",
+      "alt": "Gig Program drummers performing at a community event",
+      "caption": "Gig Program"
+    },
+    {
+      "type": "image",
+      "src": "",
+      "alt": "DSA community gathering",
+      "caption": "Community gathering"
+    },
+    {
+      "type": "video",
+      "src": "",
+      "poster": "",
+      "alt": "Video: a special studio event at DSA",
+      "caption": "Studio event"
+    },
+    {
+      "type": "image",
+      "src": "",
+      "alt": "Drummers playing together at a DSA event",
+      "caption": "Playing together"
+    },
+    {
+      "type": "image",
+      "src": "",
+      "alt": "DSA families and drummers at an in-house event",
+      "caption": "In-house event"
+    }
+  ]
+}

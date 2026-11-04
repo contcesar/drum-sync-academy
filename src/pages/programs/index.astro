@@ -1,78 +1,268 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PricingCards from '../../components/PricingCards.astro';
 import Button from '../../components/Button.astro';
+import MediaSlot from '../../components/MediaSlot.astro';
+import HowItWorks from '../../components/HowItWorks.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { TOUR_URL } from '../../data/site.js';
+import { programs, tuitionRows, PRICE_UNIT } from '../../data/programs.js';
 
-const offerings = [
-  {
-    title: 'DSA Classes',
-    href: '/programs/classes',
-    desc: 'Coached sessions on a regular schedule, grouped by format and goal.',
-  },
-  {
-    title: 'PDI',
-    href: '/programs/pdi',
-    desc: 'A focused, personal development track. [TODO: confirm what PDI stands for.]',
-  },
-  {
-    title: 'Tuition',
-    href: '/programs/tuition',
-    desc: 'A clear look at costs, plans, and payment options.',
-  },
+const { classes, pdi, pack } = programs;
+
+const builtFor = [
+  'Total beginners who’ve always wanted to play',
+  'Teens and adults getting back into drumming',
+  'Drummers who already play and want structured coaching and continued growth',
+  'Anyone looking for a real drum education and a place to experience the instrument',
 ];
+
+const menu = [
+  { label: classes.name, href: '#classes' },
+  { label: pdi.name, href: '#pdi' },
+  { label: pack.name, href: '#pack' },
+  { label: 'Tuition', href: '#tuition' },
+];
+
+const check =
+  'M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z';
 ---
 
 <BaseLayout
   title="Programs & Pricing"
-  description="Explore Drum Sync Academy programs: DSA Classes, PDI, and tuition options."
+  description="DSA Drum Classes, Personal Drum Instruction (PDI), and the Education Pack. Drum education for kids (8+), teens, and adults. All new drummers begin with a Studio Tour."
 >
   <!-- Page header -->
   <section class="border-b border-border bg-surface">
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h1 class="max-w-3xl text-4xl font-bold text-white sm:text-5xl">
-        Programs &amp; Pricing
-      </h1>
+      <h1 class="text-4xl font-bold uppercase text-white sm:text-5xl">Programs &amp; Pricing</h1>
+      <p class="mt-6 max-w-3xl text-xl text-white sm:text-2xl">
+        Drum education built around clear curriculum, hands-on experience, and
+        coaching that helps you understand what you’re playing.
+      </p>
       <p class="mt-5 max-w-2xl text-lg text-gray-light">
-        Three ways to train at the academy. Start with the offering that fits
-        your goals, then pick a plan.
+        All new DSA drummers begin with a Studio Tour so we can learn more about
+        you, answer your questions, and help determine the right program and
+        placement.
       </p>
     </div>
   </section>
 
-  <!-- Offerings -->
-  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-    <div class="grid gap-6 md:grid-cols-3">
-      {
-        offerings.map((o) => (
-          <a
-            href={o.href}
-            class="flex flex-col rounded-2xl border border-border bg-surface p-8 transition-colors hover:border-red"
-          >
-            <h2 class="font-display text-2xl font-bold text-white">{o.title}</h2>
-            <p class="mt-3 flex-1 text-gray-muted">{o.desc}</p>
-            <span class="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-red">
-              Explore
-              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4l6 6-6 6"/></svg>
-            </span>
-          </a>
-        ))
-      }
+  <!-- Who we're for -->
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="built-for-title">
+    <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div>
+        <h2 id="built-for-title" class="text-2xl font-bold uppercase text-white sm:text-3xl">
+          Our drum programs are built for:
+        </h2>
+        <ul class="mt-8 space-y-4">
+          {
+            builtFor.map((b) => (
+              <li class="flex items-start gap-3 text-lg text-gray-light">
+                <svg class="mt-1 h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d={check} /></svg>
+                <span>{b}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-border bg-elevated p-8">
+        <p class="text-xl text-white">
+          If you’re willing to show up, learn, and give it a try, we’ll meet you
+          where you are.
+        </p>
+        <Button href={TOUR_URL} variant="primary" class="mt-8 uppercase tracking-wide">Request a Studio Tour</Button>
+      </div>
     </div>
   </section>
 
-  <!-- Pricing (repeated) -->
-  <section class="border-t border-border bg-surface">
-    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <div class="mb-10 max-w-2xl">
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">Membership plans</h2>
-        <p class="mt-4 text-lg text-gray-muted">
-          The same plans across every program. Named by commitment, not skill.
+  <!-- Program menu (jump links). Sticky under the main header on large screens. -->
+  <nav
+    aria-label="Programs on this page"
+    class="sticky top-[81px] z-20 border-y border-border bg-charcoal/95 backdrop-blur"
+  >
+    <ul class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 py-3 sm:px-6">
+      {
+        menu.map((m) => (
+          <li class="shrink-0">
+            <a
+              href={m.href}
+              class="inline-block rounded-full border border-border px-4 py-2 text-sm font-medium text-gray-light transition-colors hover:border-red hover:text-white"
+            >
+              {m.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <!-- 1. Drum Classes -->
+  <section id="classes" class="scroll-mt-40" aria-labelledby="classes-title">
+    <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-red">Program 1 · Most popular</p>
+        <h2 id="classes-title" class="mt-2 text-3xl font-bold uppercase text-white sm:text-4xl">{classes.name}</h2>
+        <p class="mt-3 text-xl text-white">{classes.tagline}</p>
+        <p class="mt-5 text-gray-light">
+          Drum Classes are DSA’s most distinctive program. Small groups of
+          typically 4–6 drummers learn together with a DSA instructor who
+          coaches each drummer throughout the class.
+        </p>
+        <p class="mt-4 text-gray-light">
+          A lot of people, especially adults and first-timers, assume private
+          lessons are the only way to learn. Group classes are worth a second
+          look: you pick up just as much from playing alongside other drummers
+          as you do from the instructor, and there’s nothing like the energy of
+          a room full of drums locking in together.
+        </p>
+        <h3 class="mt-8 text-sm font-semibold uppercase tracking-wide text-white">Why drummers love classes</h3>
+        <ul class="mt-4 space-y-3">
+          {
+            classes.benefits.map((b) => (
+              <li class="flex items-start gap-3 text-gray-light">
+                <svg class="mt-1 h-4 w-4 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d={check} /></svg>
+                <span>{b}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm text-gray-light">
+          <svg class="h-4 w-4 text-red" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 20c0-2.4 1.3-4.5 3.5-5"/></svg>
+          {classes.groupSize}
         </p>
       </div>
-      <PricingCards variant="cta" />
-      <div class="mt-10">
-        <Button href="/payment" variant="primary">Go to payment</Button>
+      <div>
+        {/* TODO(DSA-media): adult group class: 4–6 adults on kits playing together,
+            instructor coaching, energy visible. Video clip or photo. */}
+        <MediaSlot
+          type="video"
+          alt="Adults playing together in a DSA Drum Class"
+          label="Adult group class"
+          aspect="4/3"
+        />
       </div>
     </div>
   </section>
+
+  <!-- 2. PDI -->
+  <section id="pdi" class="scroll-mt-40 border-y border-border bg-surface" aria-labelledby="pdi-title">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <p class="text-sm font-semibold uppercase tracking-wide text-red">Program 2</p>
+      <h2 id="pdi-title" class="mt-2 text-3xl font-bold uppercase text-white sm:text-4xl">
+        {pdi.name} <span class="text-gray-muted normal-case">({pdi.fullName})</span>
+      </h2>
+      <p class="mt-3 max-w-2xl text-xl text-white">{pdi.tagline}</p>
+      <p class="mt-5 max-w-2xl text-gray-light">
+        Every PDI lesson is built around you: your goals, your pace, and the
+        material you want to work on. Choose the lesson length that fits how
+        much time you want with your instructor each week.
+      </p>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          pdi.tiers.map((t, i) => (
+            <div class={`flex flex-col rounded-2xl border bg-elevated p-8 ${i === 1 ? 'border-gray-muted' : 'border-border'}`}>
+              <h3 class="font-display text-2xl font-bold text-white">{t.name}</h3>
+              <p class="mt-2 text-lg font-semibold text-red">{t.length}</p>
+              <p class="mt-4 flex-1 text-gray-light">{t.suits}</p>
+              <p class="mt-6 border-t border-border pt-5 text-sm text-gray-muted">
+                <span class="font-display text-2xl font-bold text-white">{t.price}</span>
+                <span class="ml-1">{PRICE_UNIT}</span>
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Education Pack (recommended) -->
+  <section id="pack" class="scroll-mt-40" aria-labelledby="pack-title">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <div class="relative overflow-hidden rounded-3xl border-2 border-red bg-gradient-to-br from-red/15 via-surface to-surface p-8 sm:p-12">
+        <span class="inline-block rounded-full bg-red px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+          Recommended · Best value
+        </span>
+        <p class="mt-6 text-sm font-semibold uppercase tracking-wide text-red">Program 3</p>
+        <h2 id="pack-title" class="mt-2 text-3xl font-bold uppercase text-white sm:text-4xl">{pack.name}</h2>
+        <p class="mt-3 max-w-2xl text-xl text-white">{pack.tagline}</p>
+        <p class="mt-5 max-w-2xl text-gray-light">
+          Get the focus of one-on-one instruction and the energy of learning in a
+          group, together in one program.
+        </p>
+        <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <ul class="space-y-3">
+            {
+              pack.benefits.map((b) => (
+                <li class="flex items-start gap-3 text-lg text-gray-light">
+                  <svg class="mt-1 h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d={check} /></svg>
+                  <span>{b}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="flex flex-col items-start gap-4">
+            <p class="text-sm text-gray-muted">
+              <span class="font-display text-3xl font-bold text-white">{pack.price}</span>
+              <span class="ml-1">{PRICE_UNIT}</span>
+            </p>
+            <Button href={TOUR_URL} variant="primary">Get Started</Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tuition -->
+  <section id="tuition" class="scroll-mt-40 border-t border-border bg-surface" aria-labelledby="tuition-title">
+    <div class="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+      <h2 id="tuition-title" class="text-3xl font-bold uppercase text-white sm:text-4xl">Tuition</h2>
+      <p class="mt-4 text-lg text-gray-light">A clear look at DSA tuition and program costs.</p>
+      <p class="mt-2 text-gray-muted">
+        DSA runs in <strong class="font-semibold text-white">4-Week Drum Sessions</strong>.
+        Your program and placement are confirmed after your Studio Tour.
+      </p>
+
+      <div class="mt-10 overflow-x-auto rounded-2xl border border-border bg-elevated">
+        <table class="w-full min-w-[520px] border-collapse text-left">
+          <caption class="sr-only">DSA tuition by program, {PRICE_UNIT}</caption>
+          <thead>
+            <tr class="border-b border-border text-sm text-gray-muted">
+              <th scope="col" class="px-6 py-4 font-semibold">Program</th>
+              <th scope="col" class="px-6 py-4 font-semibold">Format</th>
+              <th scope="col" class="px-6 py-4 text-right font-semibold">Tuition</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-light">
+            {
+              tuitionRows.map((r) => (
+                <tr class={`border-b border-border last:border-0 ${r.featured ? 'bg-red/10' : ''}`}>
+                  <th scope="row" class="px-6 py-4 font-medium text-white">
+                    <a href={r.href} class="mr-2 hover:text-red">{r.program}</a>
+                    {r.featured && (
+                      <span class="mt-1 inline-block whitespace-nowrap rounded-full bg-red px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        Best value
+                      </span>
+                    )}
+                  </th>
+                  <td class="px-6 py-4 text-sm text-gray-muted">{r.format}</td>
+                  <td class="px-6 py-4 text-right font-semibold text-white">{r.price}<span class="block text-xs font-normal text-gray-muted">{PRICE_UNIT}</span></td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      {/* TODO(DSA-confirm): any registration fees, sibling/multi-program discounts, or billing notes. */}
+    </div>
+  </section>
+
+  <!-- How It Works (optional on this page) -->
+  <HowItWorks tone="plain" showVideo={false} id="programs-how-it-works" />
+
+  <CtaBand
+    heading="Not sure which program fits? That’s what the tour is for."
+    body="All new DSA drummers begin with a Studio Tour. We’ll help you find the right program and placement."
+    label="Request a Studio Tour"
+  />
 </BaseLayout>

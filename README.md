@@ -1,9 +1,8 @@
 # Drum Sync Academy
 
-Static marketing website for **Drum Sync Academy**, an in-person drum education
-facility. Built with [Astro](https://astro.build) and [Tailwind CSS v4](https://tailwindcss.com).
-Dark theme, fast, no heavy client frameworks — just a little vanilla JS for the
-mobile nav and the timed popup.
+Static marketing website for **Drum Sync Academy (DSA)**, a 100% drums-only
+studio. Its single conversion goal is **Request a Studio Tour**. Built with [Astro](https://astro.build) and [Tailwind CSS v4](https://tailwindcss.com).
+Dark theme, fast, no heavy client frameworks — just a little vanilla JS.
 
 ## Tech stack
 
@@ -11,7 +10,7 @@ mobile nav and the timed popup.
 - **Tailwind CSS v4** via the official `@tailwindcss/vite` plugin. Design tokens
   live in `src/styles/global.css` under the `@theme` block.
 - **@astrojs/sitemap** for `sitemap-index.xml`
-- Vanilla JS only (mobile nav toggle, timed popup)
+- Vanilla JS only (mobile nav, accordion, forms, lightbox)
 
 ## Requirements
 
@@ -46,69 +45,95 @@ npm run preview    # serve the built site locally
 3. Netlify reads `netlify.toml`:
    - Build command: `astro build`
    - Publish directory: `dist`
-4. Deploy. Netlify auto-detects the two forms on build (see below).
+4. Deploy. Netlify auto-detects the forms on build (see below).
 
 > Set your real production URL in `astro.config.mjs` (`SITE`) and in
 > `public/robots.txt` so the sitemap and Open Graph URLs are correct.
 
-## Where to paste real content
+## The one conversion goal: Request a Studio Tour
 
-Everything below is a clearly marked placeholder (search the project for `TODO`).
+The site is informational, not an enrollment platform. Every primary CTA
+("Request a Studio Tour", "Request a Tour", "Get Started", ...) links to the
+same page, set once in `src/data/site.js`:
+
+```js
+export const TOUR_URL = '/studio-tour';
+```
+
+Old URLs (`/book-assessment`, `/payment`, `/programs/classes|pdi|tuition`)
+301-redirect in `netlify.toml`.
+
+## Open placeholders (grep for these)
+
+```bash
+grep -rn "TODO(DSA-" src
+```
+
+| Tag | Meaning |
+|---|---|
+| `TODO(DSA-confirm)` | Unconfirmed fact: prices, pack name, savings, Practice Lab terms, brand spelling, form fields |
+| `TODO(DSA-media)` | Photo/video slot waiting on real footage (comment describes the shot) |
+| `TODO(DSA-form-endpoint)` | Form submission setup (`src/scripts/forms.ts`) |
+| `TODO(DSA-email-endpoint)` | Events email signup → mailing list |
+
+## Where to edit content
 
 | What | Where |
 |---|---|
-| Company logo | `public/drum-sync-logo.png` (replace this file; used in the nav and footer) |
-| Business name, address, phone, email, hours, social links | `src/data/site.js` |
+| Business name, address, phone, email, hours, social, nav links, tour URL, feature flags | `src/data/site.js` |
+| Program names, blurbs, tiers, tuition table, `[PRICE TBD]` placeholders | `src/data/programs.js` |
+| Studio Tour form fields, labels, and option values | `src/data/tourForm.js` |
+| FAQs (also generate FAQPage JSON-LD) | `src/data/faqs.js` |
+| Upcoming events | `src/data/events.json` |
+| Past events / gallery | `src/data/gallery.json` |
 | Hero video + poster | `public/dsa.mp4`, `public/hero-poster.jpg` (see `public/README-media.txt`) |
-| Pricing tier names, prices, features | `src/components/PricingCards.astro` (`tiers` array at the top) |
-| **Stripe Payment Links** | `src/components/PricingCards.astro` (`stripe:` on each tier) and `src/pages/payment.astro` (`STRIPE_LINK_ASSESSMENT`) |
-| Events | `src/data/events.json` |
-| PDI details | `src/pages/programs/pdi.astro` |
-| Instructor bios / photos | `src/pages/about.astro` |
-| FAQ answers | `src/pages/about.astro` |
 | Map location | `src/pages/contact.astro` (iframe `src`) |
 | Production URL | `astro.config.mjs` and `public/robots.txt` |
 
-### Stripe Payment Links
+### Events
 
-There is no backend — Stripe hosts checkout. Create **Payment Links** in your
-Stripe dashboard, then paste them in:
+`src/data/events.json` is an array. Past dates drop off automatically and an
+empty list shows a friendly empty state. Example entry:
 
-- `src/components/PricingCards.astro` → replace `STRIPE_LINK_MONTHLY`,
-  `STRIPE_LINK_6MONTH`, `STRIPE_LINK_ANNUAL`.
-- `src/pages/payment.astro` → replace `STRIPE_LINK_ASSESSMENT`.
+```json
+{ "date": "2027-03-14", "time": "6:30 PM", "title": "Student Concert",
+  "description": "Short blurb.", "cta": { "label": "Details", "href": "/events" } }
+```
 
-### Hero video
+### Media slots
 
-Drop your real `hero.mp4` and `hero-poster.jpg` in `public/`. Keep the video
-small — **a few MB** is the target (H.264/MP4, muted, ~10–20s loop, 1080p is
-plenty). Under `prefers-reduced-motion` the poster image is shown instead of the
-video.
+`src/components/MediaSlot.astro` renders a fixed-aspect, lazy-loaded image or
+video (with poster). With no `src` it shows a labeled "coming soon" placeholder.
+Each slot has a `TODO(DSA-media)` comment describing the footage that belongs there.
 
 ## Forms (Netlify)
 
-Two forms use [Netlify Forms](https://docs.netlify.com/forms/setup/):
+All forms use [Netlify Forms](https://docs.netlify.com/forms/setup/) (static
+markup with `data-netlify="true"`, a hidden `form-name`, and a honeypot):
 
-- **Contact** (`/contact`): name, email, phone, message
-- **Assessment** (`/book-assessment`): name, email, phone, program, experience,
-  preferred date/time
+- **studio-tour** (`/studio-tour`): the main conversion form. Client-side
+  validation, inline success message, no calendar/auto-booking by design.
+- **event-updates** (`/events`): email + optional first name.
+- **contact** (`/contact`): general questions.
 
-Both are plain HTML with `data-netlify="true"`, a hidden `form-name` input, and a
-honeypot field, and both redirect to `/thank-you` on submit. Because Astro is
-static, the markup is present at build time so Netlify can detect the forms
-automatically. Submissions appear under **Forms** in the Netlify dashboard.
+JS submissions go through one function, `submitForm` in
+`src/scripts/forms.ts`. To switch providers (Formspree, a CRM webhook, ...),
+change it there. Without JS, forms post normally and land on `/thank-you`.
 
-To let visitors self-schedule the assessment instead, swap the form for a
-Calendly embed — see the comment in `src/pages/book-assessment.astro`.
+**After deploying:** in Netlify → Forms, enable notifications for
+`studio-tour` so Kyle and Karina get each request by email.
+
+## How It Works
+
+`src/components/HowItWorks.astro` (homepage + Programs). Pass `expanded` to
+show every step fully open instead of as an accordion.
 
 ## Timed popup
 
-`src/components/Popup.astro` shows a modal ~6 seconds after load and stores its
-dismissal in `localStorage` for 7 days. It is enabled on the Home page via
-`popup={true}` on `BaseLayout`. To run it **site-wide**, flip the default in
-`src/layouts/BaseLayout.astro` (`popup = false` → `popup = true`) — one line.
-Session number, CTA target, delay, and dismissal window are in the config block
-at the top of `Popup.astro`.
+`src/components/Popup.astro` is **off** via `features.popup` in
+`src/data/site.js`. Flip it to `true` to bring it back (Home already opts in
+with `popup={true}`). Copy, CTA, delay, and dismissal window are at the top of
+`Popup.astro`.
 
 ## Design tokens
 
@@ -133,10 +158,12 @@ with `preconnect` and real fallback stacks.
 
 ```
 src/
-  components/   Button, VideoHero, PricingCards, EventCard, FaqItem, Popup, Nav, Footer
+  components/   Button, VideoHero, HowItWorks, MediaSlot, CtaBand, TourForm,
+                GalleryTile, EventCard, FaqItem, Popup, Nav, Footer
   layouts/      BaseLayout.astro
-  data/         site.js, events.json
-  pages/        index, programs/*, about, contact, events, payment, book-assessment, thank-you
+  data/         site.js, programs.js, tourForm.js, faqs.js, events.json, gallery.json
+  scripts/      forms.ts (single form-submission integration point)
+  pages/        index, programs/index, studio-tour, about, events, contact, thank-you
   styles/       global.css (theme tokens)
 public/         favicon, og-image, robots.txt, hero media placeholders
 ```
@@ -146,5 +173,5 @@ public/         favicon, og-image, robots.txt, hero media placeholders
 - Semantic HTML, alt text, visible focus states, keyboard-navigable nav and popup.
 - `prefers-reduced-motion` respected (animations reduced, hero shows poster).
 - Below-the-fold images and the map iframe are lazy-loaded.
-- JS ships only for the mobile nav and popup; everything else is static.
+- JS ships only for the mobile nav, How It Works accordion, forms, and the events lightbox.
 - Meta + Open Graph tags, favicon, and a generated sitemap are included.

@@ -1,0 +1,57 @@
+---
+import MediaSlot from './MediaSlot.astro';
+
+/**
+ * GalleryTile.astro
+ * One gallery item from src/data/gallery.json. With a `src` it renders as a
+ * button that opens the Events-page lightbox; without one it renders a
+ * labeled MediaSlot placeholder (not interactive).
+ */
+interface Props {
+  item: {
+    type: string;
+    src: string;
+    poster?: string;
+    alt: string;
+    caption: string;
+    featured?: boolean;
+  };
+}
+const { item } = Astro.props;
+const isVideo = item.type === 'video';
+const thumb = isVideo ? item.poster : item.src;
+---
+
+<figure class="h-full">
+  {
+    item.src ? (
+      <button
+        type="button"
+        class="group relative block aspect-square w-full overflow-hidden rounded-2xl border border-border bg-elevated md:h-full md:aspect-auto md:min-h-full"
+        data-lightbox
+        data-type={item.type}
+        data-src={item.src}
+        data-poster={item.poster}
+        data-alt={item.alt}
+        data-caption={item.caption}
+        aria-label={`Open ${isVideo ? 'video' : 'photo'}: ${item.alt}`}
+      >
+        {thumb ? (
+          <img src={thumb} alt="" loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        ) : (
+          <span class="absolute inset-0 grid place-items-center text-xs text-gray-muted">{item.caption}</span>
+        )}
+        {isVideo && (
+          <span class="absolute inset-0 grid place-items-center" aria-hidden="true">
+            <span class="grid h-14 w-14 place-items-center rounded-full bg-red/90 text-white">
+              <svg class="ml-1 h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+          </span>
+        )}
+      </button>
+    ) : (
+      <MediaSlot type={isVideo ? 'video' : 'image'} alt={item.alt} label={item.caption} aspect={item.featured ? '16/10' : '1/1'} class="md:h-full" />
+    )
+  }
+  <figcaption class="mt-2 text-sm text-gray-muted">{item.caption}</figcaption>
+</figure>

@@ -1,103 +1,161 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import VideoHero from '../components/VideoHero.astro';
-import PricingCards from '../components/PricingCards.astro';
-import EventCard from '../components/EventCard.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import CtaBand from '../components/CtaBand.astro';
 import Button from '../components/Button.astro';
-import events from '../data/events.json';
+import { programs } from '../data/programs.js';
 
-// Next three upcoming events (falls back to the last three if none upcoming).
-const now = new Date();
-const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
-const upcoming = sorted.filter((e) => new Date(`${e.date}T23:59:59`) >= now);
-const strip = (upcoming.length ? upcoming : sorted.slice(-3)).slice(0, 3);
+const drumsOnlyPoints = [
+  'Everyone here is a drummer—or becoming one.',
+  'Our studio is built specifically for drumming.',
+  'You’re surrounded by people who share your interest in the instrument.',
+];
+
+// Experience / community strip. Each slot is a TODO(DSA-media) placeholder
+// until real photos exist: pass `src` (and `type: 'video'` + `poster` for clips).
+const experience = [
+  // TODO(DSA-media): adult group class mid-groove, 4–6 drummers on kits, instructor coaching.
+  { label: 'Group classes', alt: 'Adults playing together in a DSA Drum Class', span: 'md:col-span-2 md:row-span-2' },
+  // TODO(DSA-media): kid (8–12) at the kit with an instructor, focused, smiling.
+  { label: 'Kids building skills', alt: 'A young drummer learning with a DSA instructor', span: '' },
+  // TODO(DSA-media): live performance shot from the Gig Program, crowd visible.
+  { label: 'Live performances', alt: 'DSA drummers performing live on stage', span: '' },
+  // TODO(DSA-media): one-on-one PDI lesson, teen or adult student, close framing.
+  { label: 'Personal instruction', alt: 'A one-on-one PDI lesson at DSA', span: '' },
+  // TODO(DSA-media): close-up of sticks on a snare / hi-hat, shallow depth of field.
+  { label: 'Close-ups of the kits', alt: 'Close-up of a drum kit at the DSA studio', span: '' },
+];
+
+const teaser = [
+  { ...programs.classes, href: '/programs#classes', badge: 'Most popular' },
+  { ...programs.pdi, href: '/programs#pdi', badge: null },
+  { ...programs.pack, href: '/programs#pack', badge: 'Best value' },
+];
 ---
 
 <BaseLayout popup={true}>
-  <!-- 1. Video hero -->
+  <!-- 1. Hero -->
   <VideoHero />
 
-  <!-- 2. Pricing right away -->
-  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6" id="pricing">
-    <div class="mb-10 max-w-2xl">
-      <h2 class="text-3xl font-bold text-white sm:text-4xl">Simple plans, no fine print</h2>
-      <p class="mt-4 text-lg text-gray-muted">
-        Pick the commitment that fits. Every plan includes coached in-person
-        sessions and time on real kits.
-      </p>
+  <!-- 2. 100% Drums-Only -->
+  <section class="relative overflow-hidden" aria-labelledby="drums-only-title">
+    <div class="mx-auto grid max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2">
+      <div>
+        <p class="font-display text-sm font-semibold uppercase tracking-[0.2em] text-red">
+          100% Drums. 100% Dedicated.
+        </p>
+        <h2 id="drums-only-title" class="mt-4 text-4xl font-bold uppercase text-white sm:text-5xl lg:text-6xl">
+          100% Drums-Only Studio
+        </h2>
+        <p class="mt-6 text-lg text-gray-light sm:text-xl">
+          We’re not a general music school. We’re an immersive community built
+          around learning, playing, and experiencing the drums.
+        </p>
+
+        <h3 class="mt-10 text-sm font-semibold uppercase tracking-wide text-white">That means:</h3>
+        <ul class="mt-4 space-y-3">
+          {
+            drumsOnlyPoints.map((p) => (
+              <li class="flex items-start gap-3 text-gray-light">
+                <svg class="mt-1 h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0L3.3 9.7a1 1 0 1 1 1.4-1.4l3.1 3.1 6.8-6.8a1 1 0 0 1 1.4 0Z"/></svg>
+                <span>{p}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <p class="mt-8 border-l-2 border-red pl-4 text-lg text-white">
+          Whether you’re picking up drumsticks for the first time or building on
+          skills you already have, you’re in the right place.
+        </p>
+      </div>
+
+      <div>
+        {/* TODO(DSA-media): wide shot of the studio: multiple kits set up, room lighting,
+            ideally with drummers playing. Pass src to fill. */}
+        <MediaSlot
+          alt="Inside the Drum Sync Academy studio"
+          label="Studio wide shot"
+          aspect="4/5"
+        />
+      </div>
     </div>
-    <PricingCards variant="cta" />
   </section>
 
-  <!-- 3. Programs teaser -->
-  <section class="border-y border-border bg-surface">
-    <div class="mx-auto grid max-w-6xl items-center gap-8 px-4 py-20 sm:px-6 md:grid-cols-2">
-      <div>
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">Programs built around how you play</h2>
-        <p class="mt-4 text-lg text-gray-light">
-          From weekly classes to focused one-on-one development, our programs
-          are shaped by format and goal, not labels. Explore what fits your
-          schedule and where you want to go.
-        </p>
-        <div class="mt-8">
-          <Button href="/programs" variant="primary">View Programs</Button>
-        </div>
-      </div>
-      <ul class="grid gap-4">
+  <!-- 3. Experience / community strip -->
+  <section class="border-t border-border bg-surface" aria-labelledby="experience-title">
+    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+      <h2 id="experience-title" class="text-3xl font-bold uppercase text-white sm:text-4xl">
+        Learn. Play. Experience. Grow.
+      </h2>
+      <p class="mt-3 max-w-xl text-gray-muted">
+        Kids, teens, and adults. First-timers and experienced players. One drum community.
+      </p>
+      <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-2">
         {
-          [
-            { title: 'DSA Classes', desc: 'Group and small-format sessions on a regular schedule.', href: '/programs/classes' },
-            { title: 'PDI', desc: 'Personal development track for focused, one-on-one growth.', href: '/programs/pdi' },
-            { title: 'Tuition', desc: 'Clear breakdown of costs and payment options.', href: '/programs/tuition' },
-          ].map((p) => (
-            <li>
-              <a
-                href={p.href}
-                class="flex items-center justify-between gap-4 rounded-2xl border border-border bg-elevated p-6 transition-colors hover:border-red"
-              >
-                <span>
-                  <span class="block font-display text-lg font-bold text-white">{p.title}</span>
-                  <span class="mt-1 block text-sm text-gray-muted">{p.desc}</span>
-                </span>
-                <svg class="h-5 w-5 shrink-0 text-red" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4l6 6-6 6"/></svg>
-              </a>
-            </li>
+          experience.map((e) => (
+            <div class={`col-span-2 sm:col-span-1 ${e.span}`}>
+              <MediaSlot alt={e.alt} label={e.label} aspect="1/1" class="h-full" />
+            </div>
           ))
         }
-      </ul>
-    </div>
-  </section>
-
-  <!-- 4. Upcoming events strip -->
-  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-    <div class="mb-10 flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <h2 class="text-3xl font-bold text-white sm:text-4xl">Upcoming events</h2>
-        <p class="mt-3 text-gray-muted">Clinics, showcases, and workshops at the academy.</p>
       </div>
-      <Button href="/events" variant="secondary">All events</Button>
-    </div>
-    <div class="grid gap-6 md:grid-cols-3">
-      {strip.map((e) => <EventCard {...e} />)}
     </div>
   </section>
 
-  <!-- 5. Final CTA band -->
-  <section class="bg-red">
-    <div class="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6">
-      <h2 class="max-w-2xl text-3xl font-bold text-white sm:text-4xl">
-        Ready to find your sync? Start with a free assessment.
-      </h2>
-      <p class="max-w-xl text-white/90">
-        We'll listen to where you are and map out where you want to go, no
-        pressure.
-      </p>
-      <Button
-        href="/book-assessment"
-        variant="secondary"
-        class="border-white bg-white !text-charcoal hover:border-white hover:bg-white/90 hover:!text-charcoal"
-        >Book Your Assessment</Button
-      >
+  <!-- 4. Programs teaser (no prices on the homepage) -->
+  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="programs-title">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-2xl">
+        <h2 id="programs-title" class="text-3xl font-bold uppercase text-white sm:text-4xl">Our Programs</h2>
+        <p class="mt-4 text-lg text-gray-light">
+          Drum education built around clear curriculum, hands-on experience, and
+          coaching that helps you understand what you’re playing.
+        </p>
+      </div>
+      <Button href="/programs" variant="secondary">Explore Programs &amp; Pricing</Button>
     </div>
+
+    <ul class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        teaser.map((p) => (
+          <li>
+            <a
+              href={p.href}
+              class={`group relative flex h-full flex-col rounded-2xl border bg-surface p-8 transition-colors hover:border-red ${p.id === 'pack' ? 'border-red/60' : 'border-border'}`}
+            >
+              {p.badge && (
+                <span class="absolute -top-3 left-8 rounded-full bg-red px-3 py-1 text-xs font-semibold text-white">
+                  {p.badge}
+                </span>
+              )}
+              <h3 class="font-display text-xl font-bold text-white">{p.name}</h3>
+              <p class="mt-2 text-sm font-semibold text-red">{p.tagline}</p>
+              <p class="mt-4 flex-1 text-gray-muted">{p.teaser}</p>
+              <span class="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-white">
+                Learn more
+                <svg class="h-4 w-4 text-red transition-transform group-hover:translate-x-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4l6 6-6 6"/></svg>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </section>
+
+  <!-- 5. How It Works -->
+  <HowItWorks />
+
+  <!-- 6. Final CTA band -->
+  {/* Alternate headings from the meeting (swap in if preferred):
+        "Your Drumming Journey Starts Here."
+        "Ready to Experience DSA?"
+        "It's Your Time to Drum." */}
+  <CtaBand
+    heading="Ready to be part of the drum community? Start with a DSA Studio Tour."
+    body="No pressure, no commitment—just a chance to see if we’re a good fit."
+    label="Request a Tour"
+  />
 </BaseLayout>
