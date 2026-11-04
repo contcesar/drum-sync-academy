@@ -19,6 +19,8 @@
  *   ambient  video only: autoplay muted loop, no controls (decorative b-roll).
  *            Hidden under prefers-reduced-motion (poster shown instead).
  *   eager    load immediately instead of lazily (above-the-fold only)
+ *   position CSS object-position for the crop, e.g. 'center top' or '50% 20%'
+ *            (keeps faces in frame when a portrait photo fills a square slot)
  */
 interface Props {
   type?: 'image' | 'video';
@@ -29,6 +31,7 @@ interface Props {
   aspect?: string;
   ambient?: boolean;
   eager?: boolean;
+  position?: string;
   class?: string;
 }
 
@@ -41,6 +44,7 @@ const {
   aspect = '16/9',
   ambient = false,
   eager = false,
+  position = 'center',
   class: className = '',
 } = Astro.props;
 
@@ -112,6 +116,7 @@ const frame = `relative overflow-hidden rounded-2xl border border-border bg-elev
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         class="absolute inset-0 h-full w-full object-cover"
+        style={`object-position: ${position};`}
       />
     )
   }

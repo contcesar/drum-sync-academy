@@ -13,19 +13,38 @@ const drumsOnlyPoints = [
   'You’re surrounded by people who share your interest in the instrument.',
 ];
 
-// Experience / community strip. Each slot is a TODO(DSA-media) placeholder
-// until real photos exist: pass `src` (and `type: 'video'` + `poster` for clips).
+// Experience / community strip. Pass `src` to fill a slot (and `type: 'video'`
+// + `poster` for clips); `position` sets the crop for portrait photos.
 const experience = [
   // TODO(DSA-media): adult group class mid-groove, 4–6 drummers on kits, instructor coaching.
   { label: 'Group classes', alt: 'Adults playing together in a DSA Drum Class', span: 'md:col-span-2 md:row-span-2' },
-  // TODO(DSA-media): kid (8–12) at the kit with an instructor, focused, smiling.
-  { label: 'Kids building skills', alt: 'A young drummer learning with a DSA instructor', span: '' },
-  // TODO(DSA-media): live performance shot from the Gig Program, crowd visible.
-  { label: 'Live performances', alt: 'DSA drummers performing live on stage', span: '' },
-  // TODO(DSA-media): one-on-one PDI lesson, teen or adult student, close framing.
-  { label: 'Personal instruction', alt: 'A one-on-one PDI lesson at DSA', span: '' },
-  // TODO(DSA-media): close-up of sticks on a snare / hi-hat, shallow depth of field.
-  { label: 'Close-ups of the kits', alt: 'Close-up of a drum kit at the DSA studio', span: '' },
+  {
+    label: 'Kids and families',
+    src: '/dsa-kids-and-families.jpg',
+    alt: 'Kids, parents, and DSA instructors holding up drumsticks on the studio stage in front of the DSA logo',
+    span: '',
+  },
+  {
+    label: 'Live performance',
+    src: '/dsa-drummer-performing.jpg',
+    alt: 'A drummer mid-performance, sticks raised and smiling, behind a cymbal',
+    position: '50% 10%',
+    span: '',
+  },
+  {
+    label: 'Adult drummer',
+    src: '/dsa-adult-drummer-outdoor.jpg',
+    alt: 'An adult drummer smiling while playing a green-lit kit at an outdoor event',
+    position: '50% 20%',
+    span: '',
+  },
+  {
+    label: 'Outdoor show',
+    src: '/dsa-live-performance-outdoor.jpg',
+    alt: 'A drummer grinning at the camera while playing a white drum kit on an outdoor stage',
+    position: 'center top',
+    span: '',
+  },
 ];
 
 const teaser = [
@@ -73,12 +92,12 @@ const teaser = [
       </div>
 
       <div>
-        {/* TODO(DSA-media): wide shot of the studio: multiple kits set up, room lighting,
-            ideally with drummers playing. Pass src to fill. */}
+        {/* Group of DSA drummers, kids to adults, on the studio stage. Square photo, so the
+            slot is 1:1 to keep everyone in frame. */}
         <MediaSlot
-          alt="Inside the Drum Sync Academy studio"
-          label="Studio wide shot"
-          aspect="4/5"
+          src="/dsa-community-stage.jpg"
+          alt="A group of DSA drummers, teens and adults, smiling and holding drumsticks on the studio stage in front of the DSA logo and a red drum kit"
+          aspect="1/1"
         />
       </div>
     </div>
@@ -97,7 +116,7 @@ const teaser = [
         {
           experience.map((e) => (
             <div class={`col-span-2 sm:col-span-1 ${e.span}`}>
-              <MediaSlot alt={e.alt} label={e.label} aspect="1/1" class="h-full" />
+              <MediaSlot src={e.src} alt={e.alt} label={e.label} position={e.position} aspect="1/1" class="h-full" />
             </div>
           ))
         }
