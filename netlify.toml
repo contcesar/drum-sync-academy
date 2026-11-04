@@ -22,3 +22,30 @@
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Old URLs from the enrollment/payment flow. Everything now goes through the
+# Studio Tour (see TOUR_URL in src/data/site.js) and a single Programs page.
+[[redirects]]
+  from = "/book-assessment"
+  to = "/studio-tour"
+  status = 301
+
+[[redirects]]
+  from = "/payment"
+  to = "/programs#tuition"
+  status = 301
+
+[[redirects]]
+  from = "/programs/classes"
+  to = "/programs#classes"
+  status = 301
+
+[[redirects]]
+  from = "/programs/pdi"
+  to = "/programs#pdi"
+  status = 301
+
+[[redirects]]
+  from = "/programs/tuition"
+  to = "/programs#tuition"
+  status = 301

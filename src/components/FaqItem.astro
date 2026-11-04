@@ -12,7 +12,7 @@ const { question } = Astro.props;
 
 <details class="group rounded-xl border border-border bg-surface px-5 open:bg-elevated">
   <summary
-    class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 font-display text-base font-semibold text-white marker:hidden"
+    class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-5 font-display text-base font-semibold text-white marker:hidden [&::-webkit-details-marker]:hidden"
   >
     {question}
     <svg

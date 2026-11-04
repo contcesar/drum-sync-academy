@@ -1,32 +1,36 @@
 ---
 import Button from './Button.astro';
+import { TOUR_URL } from '../data/site.js';
 
 /**
  * VideoHero.astro
  * Full-width background video with a poster fallback and a dark overlay.
- * Under prefers-reduced-motion the video is hidden and the poster image is
- * shown instead (pure CSS via Tailwind's motion-reduce/motion-safe variants).
+ * Autoplays muted + looped. Under prefers-reduced-motion the video is hidden
+ * and paused, and the poster image is shown instead.
+ *
+ * TODO(DSA-media): replace /dsa.mp4 + /hero-poster.jpg with the new energetic
+ * hero cut: students learning, instructors teaching, adults in group classes,
+ * kids building skills, people playing together, live performances, wide
+ * studio shots, close-ups of kits. Show a mix of adults and kids. Less
+ * documentary, more energy. ~10–20s loop, H.264 MP4, 1080p, a few MB.
  */
 interface Props {
   heading?: string;
   subheading?: string;
   videoSrc?: string;
   poster?: string;
-  primaryLabel?: string;
-  primaryHref?: string;
-  secondaryLabel?: string;
-  secondaryHref?: string;
+  ctaLabel?: string;
+  microcopy?: string;
 }
 
 const {
   heading = 'Drum Sync Academy',
-  subheading = 'In-person drum education with real kits, real rooms, and coaching that meets you where you are.',
+  // TODO(DSA-confirm): "drumming experience" vs. "drum experience".
+  subheading = 'Not just drum lessons. A drum education. A drumming experience.',
   videoSrc = '/dsa.mp4',
   poster = '/hero-poster.jpg',
-  primaryLabel = 'Book Your Assessment',
-  primaryHref = '/book-assessment',
-  secondaryLabel = 'View Programs',
-  secondaryHref = '/programs',
+  ctaLabel = 'Request a Studio Tour',
+  microcopy = 'All new DSA drummers begin with a Studio Tour. Tours are scheduled by appointment.',
 } = Astro.props;
 ---
 
@@ -35,6 +39,7 @@ const {
   <div class="absolute inset-0 -z-10">
     <!-- Video shows only when motion is allowed -->
     <video
+      id="hero-video"
       class="h-full w-full object-cover motion-reduce:hidden"
       autoplay
       muted
@@ -54,24 +59,36 @@ const {
       class="hidden h-full w-full object-cover motion-reduce:block"
       aria-hidden="true"
     />
-    <!-- Lighter overlays: darken the left (behind the text) and blend the
-         bottom into the page, while keeping the right/top of the video clear. -->
+    <!-- Overlays: darken the left (behind the text) and blend the bottom into the page. -->
     <div class="absolute inset-0 bg-gradient-to-r from-charcoal/80 via-charcoal/35 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-charcoal via-transparent to-transparent"></div>
   </div>
 
   <div class="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6 sm:py-28">
     <div class="max-w-2xl">
-      <h1 class="text-5xl font-bold text-white sm:text-6xl lg:text-7xl">
+      <h1 class="text-5xl font-bold uppercase text-white sm:text-6xl lg:text-7xl">
         {heading}
       </h1>
       <p class="mt-6 max-w-xl text-lg text-gray-light sm:text-xl">
         {subheading}
       </p>
-      <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-        <Button href={primaryHref} variant="primary">{primaryLabel}</Button>
-        <Button href={secondaryHref} variant="secondary">{secondaryLabel}</Button>
+      <div class="mt-10">
+        <Button href={TOUR_URL} variant="primary" class="px-8 py-4 text-lg uppercase tracking-wide">{ctaLabel}</Button>
+        <p class="mt-4 max-w-md text-sm text-gray-light/90">{microcopy}</p>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Don't keep decoding a hidden video for reduced-motion users.
+  const v = document.getElementById('hero-video') as HTMLVideoElement | null;
+  const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sync = () => {
+    if (!v) return;
+    if (mq.matches) v.pause();
+    else v.play().catch(() => {});
+  };
+  sync();
+  mq.addEventListener('change', sync);
+</script>

@@ -1,0 +1,200 @@
+---
+import Button from './Button.astro';
+import MediaSlot from './MediaSlot.astro';
+import { TOUR_URL } from '../data/site.js';
+
+/**
+ * HowItWorks.astro
+ * Three numbered steps. Each step's title and one-line summary are ALWAYS
+ * visible; the extra detail sits in an accordion panel.
+ *
+ * Accessibility: each step title is a <button> inside an <h3> with
+ * aria-expanded / aria-controls; the panel is role="region". Enter/Space
+ * toggle (native button); Up/Down/Home/End move between step buttons.
+ * Step 1 is open by default.
+ *
+ * Props:
+ *   expanded   render every step fully expanded with no toggles
+ *              (the team is still testing accordion vs. expanded).
+ *   showVideo  show the "What to expect on your tour" video slot.
+ *   heading    section heading.
+ *   tone       'surface' (default, grey band) | 'plain'
+ */
+interface Props {
+  expanded?: boolean;
+  showVideo?: boolean;
+  heading?: string;
+  tone?: 'surface' | 'plain';
+  id?: string;
+}
+
+const {
+  expanded = false,
+  showVideo = true,
+  heading = 'How It Works',
+  tone = 'surface',
+  id = 'how-it-works',
+} = Astro.props;
+
+const steps = [
+  {
+    title: 'Request a Studio Tour',
+    summary:
+      'Meet a DSA team member, see the studio, ask questions, and learn how DSA works. We’ll help you figure out whether DSA is the right fit for you.',
+    detail:
+      'Fill out a short form and tell us about yourself or your drummer. Kyle or Karina personally reviews every request, typically within 48 hours, and reaches out to set up a visit that fits your goals, experience, and schedule.',
+  },
+  {
+    title: 'Find Your Program',
+    summary:
+      'We’ll learn more about your goals, age, and experience, then help determine the best program and instructor for you.',
+    detail:
+      'Tour the studio, explore the programs, and meet the team. We’ll match you with the right class, instructor, and schedule.',
+  },
+  {
+    title: 'Start Playing',
+    summary:
+      'Once you’re placed, you’ll get started in one of our 4-Week Drum Sessions and begin your DSA experience.',
+    detail: null,
+  },
+];
+---
+
+<section
+  id={id}
+  class={tone === 'surface' ? 'border-y border-border bg-surface' : ''}
+  aria-labelledby={`${id}-title`}
+>
+  <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+    <div class="grid gap-12 lg:grid-cols-[1fr_minmax(0,26rem)] lg:items-start">
+      <div>
+        <h2 id={`${id}-title`} class="text-3xl font-bold uppercase text-white sm:text-4xl">{heading}</h2>
+
+        <ol class="mt-10 space-y-4" data-hiw={expanded ? undefined : ''}>
+          {
+            steps.map((s, i) => {
+              const n = i + 1;
+              const btnId = `${id}-step-${n}-btn`;
+              const panelId = `${id}-step-${n}-panel`;
+              const open = expanded || i === 0;
+              const collapsible = !expanded && !!s.detail;
+              return (
+                <li class="rounded-2xl border border-border bg-elevated p-5 sm:p-6">
+                  <div class="flex gap-4 sm:gap-5">
+                    <span
+                      class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-red font-display text-lg font-bold text-white"
+                      aria-hidden="true"
+                    >
+                      {n}
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <h3 class="text-lg font-bold uppercase text-white sm:text-xl">
+                        {collapsible ? (
+                          <button
+                            type="button"
+                            id={btnId}
+                            class="hiw-toggle flex w-full items-center justify-between gap-4 rounded-md text-left uppercase"
+                            aria-expanded={open ? 'true' : 'false'}
+                            aria-controls={panelId}
+                          >
+                            <span>
+                              <span class="sr-only">Step {n}: </span>
+                              {s.title}
+                            </span>
+                            <svg
+                              class="hiw-icon h-5 w-5 shrink-0 text-gray-muted transition-transform"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M12 5v14M5 12h14" />
+                            </svg>
+                          </button>
+                        ) : (
+                          <span id={btnId}>
+                            <span class="sr-only">Step {n}: </span>
+                            {s.title}
+                          </span>
+                        )}
+                      </h3>
+                      <p class="mt-2 text-gray-light">{s.summary}</p>
+                      {s.detail && (
+                        <div
+                          id={panelId}
+                          role={collapsible ? 'region' : undefined}
+                          aria-labelledby={collapsible ? btnId : undefined}
+                          class="mt-3 border-l-2 border-red pl-4 text-sm leading-relaxed text-gray-muted"
+                          hidden={!open}
+                        >
+                          {s.detail}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              );
+            })
+          }
+        </ol>
+
+        <div class="mt-10">
+          <Button href={TOUR_URL} variant="primary">Request a Studio Tour</Button>
+        </div>
+      </div>
+
+      {
+        showVideo && (
+          <div>
+            {/* TODO(DSA-media): "What to expect on your tour" video (60–90s): greeting at the
+                front desk, walking the rooms, a peek at a group class, sitting at a kit,
+                talking through programs with Kyle or Karina. Pass src + poster to fill. */}
+            <MediaSlot
+              type="video"
+              alt="Video: what to expect on your DSA Studio Tour"
+              label="What to expect on your tour"
+              aspect="16/9"
+            />
+            <p class="mt-3 text-sm text-gray-muted">What to expect on your tour</p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hiw-toggle[aria-expanded='true'] .hiw-icon {
+    transform: rotate(45deg);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-hiw]').forEach((list) => {
+    const buttons = Array.from(list.querySelectorAll<HTMLButtonElement>('.hiw-toggle'));
+
+    buttons.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        const panel = document.getElementById(btn.getAttribute('aria-controls') || '');
+        const open = btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(open));
+        if (panel) panel.hidden = !open;
+      });
+
+      btn.addEventListener('keydown', (e) => {
+        const last = buttons.length - 1;
+        let next: number | null = null;
+        if (e.key === 'ArrowDown') next = i === last ? 0 : i + 1;
+        else if (e.key === 'ArrowUp') next = i === 0 ? last : i - 1;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = last;
+        if (next !== null) {
+          e.preventDefault();
+          buttons[next].focus();
+        }
+      });
+    });
+  });
+</script>

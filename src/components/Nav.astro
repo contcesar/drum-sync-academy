@@ -1,30 +1,16 @@
 ---
 import Button from './Button.astro';
-import { site } from '../data/site.js';
+import { site, navLinks, TOUR_URL } from '../data/site.js';
 
 /**
  * Nav.astro
- * Logo left, links right. Programs & Pricing is a dropdown whose parent
- * label links to /programs. Desktop dropdown is pure CSS (hover +
- * focus-within, keyboard friendly). Mobile uses a JS hamburger toggle and
- * a native <details> for the inline dropdown.
+ * Logo left, links right, highlighted "Request a Studio Tour" button.
+ * Links come from `navLinks` in src/data/site.js. Mobile uses a small JS
+ * hamburger toggle.
  */
 const pathname = Astro.url.pathname;
 const isActive = (href: string) =>
   href === '/' ? pathname === '/' : pathname.startsWith(href);
-
-const programChildren = [
-  { label: 'DSA Classes', href: '/programs/classes' },
-  { label: 'PDI', href: '/programs/pdi' },
-  { label: 'Tuition', href: '/programs/tuition' },
-];
-
-const mainLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Events', href: '/events' },
-  { label: 'About & FAQ', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
 
 const linkBase =
   'text-sm font-medium text-gray-light hover:text-white transition-colors';
@@ -36,70 +22,34 @@ const linkBase =
     aria-label="Primary"
   >
     <!-- Logo. Replace public/drum-sync-logo.png to change it. -->
-    <a href="/" class="flex items-center" aria-label="Drum Sync Academy home">
-      <img src="/drum-sync-logo.png" alt="Drum Sync Academy" width="1500" height="520" class="h-12 w-auto" />
+    <a href="/" class="flex shrink-0 items-center" aria-label={`${site.name} home`}>
+      <img src="/drum-sync-logo.png" alt={site.name} width="1500" height="520" class="h-12 w-auto" />
     </a>
 
     <!-- Desktop links -->
-    <ul class="hidden items-center gap-7 lg:flex">
-      <li>
-        <a
-          href="/"
-          class={`${linkBase} ${isActive('/') ? 'text-white' : ''}`}
-          aria-current={isActive('/') ? 'page' : undefined}>Home</a
-        >
-      </li>
-
-      <!-- Programs & Pricing dropdown -->
-      <li class="group relative">
-        <a
-          href="/programs"
-          class={`${linkBase} inline-flex items-center gap-1 ${pathname.startsWith('/programs') ? 'text-white' : ''}`}
-          aria-current={pathname.startsWith('/programs') ? 'page' : undefined}
-        >
-          Programs &amp; Pricing
-          <svg class="h-3.5 w-3.5 transition-transform group-hover:rotate-180" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
-        </a>
-        <div
-          class="invisible absolute left-1/2 top-full z-50 w-52 -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-        >
-          <ul class="overflow-hidden rounded-xl border border-border bg-elevated p-2 shadow-lg shadow-black/40">
-            {
-              programChildren.map((c) => (
-                <li>
-                  <a
-                    href={c.href}
-                    class={`block rounded-lg px-3 py-2 text-sm text-gray-light hover:bg-surface hover:text-white ${isActive(c.href) ? 'text-white' : ''}`}
-                  >
-                    {c.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </li>
-
+    <ul class="hidden items-center gap-6 lg:flex xl:gap-7">
       {
-        mainLinks
-          .filter((l) => l.href !== '/')
-          .map((l) => (
-            <li>
-              <a
-                href={l.href}
-                class={`${linkBase} ${isActive(l.href) ? 'text-white' : ''}`}
-                aria-current={isActive(l.href) ? 'page' : undefined}
-              >
-                {l.label}
-              </a>
-            </li>
-          ))
+        navLinks.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class={`${linkBase} ${isActive(l.href) ? 'text-white' : ''}`}
+              aria-current={isActive(l.href) ? 'page' : undefined}
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
       }
-
       <li>
-        <Button href="/book-assessment" variant="primary" class="px-5 py-2.5"
-          >Book Assessment</Button
+        <Button
+          href={TOUR_URL}
+          variant="primary"
+          class="px-5 py-2.5 text-sm"
+          aria-current={isActive(TOUR_URL) ? 'page' : undefined}
         >
+          Request a Studio Tour
+        </Button>
       </li>
     </ul>
 
@@ -122,54 +72,29 @@ const linkBase =
      Kept OUTSIDE <header> on purpose: the header uses backdrop-blur, which
      makes it the containing block for position:fixed children and would
      collapse this panel. As a sibling it is fixed to the viewport. -->
-  <div
-    id="mobile-menu"
-    class="fixed inset-x-0 bottom-0 top-[80px] z-30 hidden overflow-y-auto border-t border-border bg-charcoal lg:hidden"
-  >
-    <ul class="flex flex-col gap-1 px-4 py-6 text-lg">
-      <li>
-        <a href="/" class="block rounded-lg px-3 py-3 text-gray-light hover:bg-surface hover:text-white">Home</a>
-      </li>
-      <li>
-        <details class="group rounded-lg">
-          <summary
-            class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-3 text-gray-light hover:bg-surface hover:text-white"
+<div
+  id="mobile-menu"
+  class="fixed inset-x-0 bottom-0 top-[80px] z-30 hidden overflow-y-auto border-t border-border bg-charcoal lg:hidden"
+>
+  <ul class="flex flex-col gap-1 px-4 py-6 text-lg">
+    {
+      navLinks.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            class={`block rounded-lg px-3 py-3 hover:bg-surface hover:text-white ${isActive(l.href) ? 'text-white' : 'text-gray-light'}`}
+            aria-current={isActive(l.href) ? 'page' : undefined}
           >
-            Programs &amp; Pricing
-            <svg class="h-4 w-4 transition-transform group-open:rotate-180" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
-          </summary>
-          <ul class="mt-1 flex flex-col gap-1 border-l border-border pl-3">
-            <li>
-              <a href="/programs" class="block rounded-lg px-3 py-2 text-base text-gray-muted hover:text-white">Overview</a>
-            </li>
-            {
-              programChildren.map((c) => (
-                <li>
-                  <a href={c.href} class="block rounded-lg px-3 py-2 text-base text-gray-muted hover:text-white">
-                    {c.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </details>
-      </li>
-      {
-        mainLinks
-          .filter((l) => l.href !== '/')
-          .map((l) => (
-            <li>
-              <a href={l.href} class="block rounded-lg px-3 py-3 text-gray-light hover:bg-surface hover:text-white">
-                {l.label}
-              </a>
-            </li>
-          ))
-      }
-      <li class="mt-3">
-        <Button href="/book-assessment" variant="primary" class="w-full">Book Assessment</Button>
-      </li>
-    </ul>
-  </div>
+            {l.label}
+          </a>
+        </li>
+      ))
+    }
+    <li class="mt-3">
+      <Button href={TOUR_URL} variant="primary" class="w-full">Request a Studio Tour</Button>
+    </li>
+  </ul>
+</div>
 
 <script>
   const toggle = document.getElementById('nav-toggle');
@@ -192,9 +117,12 @@ const linkBase =
     setOpen(!isOpen);
   });
 
-  // Close on Escape and when a link is tapped.
+  // Close on Escape (returning focus to the toggle) and when a link is tapped.
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setOpen(false);
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
   });
   menu?.querySelectorAll('a').forEach((a) =>
     a.addEventListener('click', () => setOpen(false)),

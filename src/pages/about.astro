@@ -1,106 +1,206 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FaqItem from '../components/FaqItem.astro';
-import Button from '../components/Button.astro';
+import MediaSlot from '../components/MediaSlot.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { faqs, faqJsonLd } from '../data/faqs.js';
 
-// TODO: real instructor bios and photos.
-const instructors = [
-  { name: 'Kyle Schweikhard', role: 'Lead Instructor', bio: 'TODO: placeholder bio. Background, playing style, and teaching focus.' },
-  { name: 'Instructor Name', role: 'Coach', bio: 'TODO: placeholder bio. Background, playing style, and teaching focus.' },
-  { name: 'Instructor Name', role: 'Coach', bio: 'TODO: placeholder bio. Background, playing style, and teaching focus.' },
-];
-
-const faqs = [
-  { q: 'How do I get started?', a: 'Book a free assessment. We listen to where you are, talk through your goals, and recommend a format and schedule.' },
-  { q: 'Do I need my own drum kit?', a: 'No. TODO: placeholder. We provide kits and practice rooms on site. Many students practice here between sessions.' },
-  { q: 'Should I bring my own sticks?', a: 'TODO: placeholder. Bring your own if you have a preferred pair, otherwise loaners are available at the front desk.' },
-  { q: 'How are sessions scheduled?', a: 'TODO: placeholder. Group sessions run on a fixed weekly schedule; one-on-one and small-format times are booked with your coach.' },
-  { q: 'Can I change or cancel my plan?', a: 'TODO: placeholder. Monthly plans are month-to-month and can be cancelled anytime. Longer plans lock in a lower rate.' },
-  { q: 'What does the assessment cost?', a: 'TODO: placeholder. The assessment is free to book. Any assessment fee is applied to your first month on enrollment.' },
-  { q: 'How do payments work?', a: 'Payments are handled securely by Stripe. We do not store card details on this site.' },
-  { q: 'Do you teach all ages?', a: 'TODO: placeholder. Confirm age ranges and any youth-specific formats.' },
-  { q: 'Where are you located and is there parking?', a: 'TODO: placeholder. Add the real address, parking notes, and transit options. See the Contact page for the map.' },
-  { q: 'Do you offer make-up sessions?', a: 'TODO: placeholder. Describe the make-up and rescheduling policy.' },
+const experienceLines = [
+  'You learn on real drums.',
+  'You develop real skills.',
+  'You play with other drummers.',
+  'You get opportunities to perform.',
+  'You become part of a community.',
 ];
 ---
 
 <BaseLayout
   title="About & FAQ"
-  description="The story behind Drum Sync Academy, our instructors, and answers to common questions."
+  description="Since 2005, Drum Sync Academy has been a 100% drums-only studio built around drum education and the drumming experience. Meet owner Kyle Schweikhard and get answers to common questions."
+  jsonLd={faqJsonLd}
 >
   <section class="border-b border-border bg-surface">
     <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h1 class="text-4xl font-bold text-white sm:text-5xl">About &amp; FAQ</h1>
+      <h1 class="text-4xl font-bold uppercase text-white sm:text-5xl">About &amp; FAQ</h1>
       <p class="mt-5 max-w-2xl text-lg text-gray-light">
-        Who we are, why the academy exists, and the questions we hear most.
+        Our story, our mission, the person behind DSA, and the questions we hear most.
       </p>
+      <nav aria-label="On this page" class="mt-8">
+        <ul class="flex flex-wrap gap-2 text-sm">
+          {
+            [
+              ['Our Story', '#story'],
+              ['Our Mission', '#mission'],
+              ['Meet the Owner', '#owner'],
+              ['FAQs', '#faq'],
+            ].map(([l, h]) => (
+              <li>
+                <a href={h} class="inline-block rounded-full border border-border px-4 py-2 font-medium text-gray-light hover:border-red hover:text-white">
+                  {l}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
     </div>
   </section>
 
-  <!-- Story + mission -->
-  <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-    <div class="grid gap-12 md:grid-cols-2">
+  <!-- Our Story -->
+  <section id="story" class="scroll-mt-24" aria-labelledby="story-title">
+    <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-start">
       <div>
-        <h2 class="text-3xl font-bold text-white">Our story</h2>
-        <p class="mt-4 text-gray-light">
-          TODO: placeholder. Tell the facility story: how Drum Sync Academy
-          started, what makes the space different, and the room-by-room setup
-          students train in.
-        </p>
-        <h2 class="mt-10 text-3xl font-bold text-white">Our mission</h2>
-        <p class="mt-4 text-gray-light">
-          TODO: placeholder. State the mission in a sentence or two: meet each
-          drummer where they are and give them the room, gear, and coaching to
-          get where they want to go.
-        </p>
+        <p class="text-sm font-semibold uppercase tracking-wide text-red">Our Story</p>
+        <h2 id="story-title" class="mt-2 text-3xl font-bold text-white sm:text-4xl">
+          Built for drummers. Built around the experience.
+        </h2>
+        <div class="mt-6 space-y-5 text-lg leading-relaxed text-gray-light">
+          <p>
+            Since 2005, Drum Sync Academy has been creating a place where people
+            can do more than simply take drum lessons.
+          </p>
+          <p>
+            What started with a passion for drums and drum education has grown
+            into a 100% drums-only studio where drummers can learn, play, grow,
+            connect, and experience what it really means to be a drummer.
+          </p>
+          <p>At DSA, we believe the experience should go beyond the lesson room.</p>
+          <ul class="space-y-1 border-l-2 border-red pl-5 font-display text-white">
+            {experienceLines.map((l) => <li>{l}</li>)}
+          </ul>
+          <p>That’s what we mean when we say DSA is more than drum lessons.</p>
+          <p>
+            Over the years, DSA has continued to grow through classes, private
+            instruction, programs, clinics, performances, and countless hours
+            spent helping drummers develop their skills. But at the heart of it
+            all, the idea has stayed the same:
+          </p>
+          <p class="text-xl font-semibold text-white">
+            Create a place where people can learn the drums, enjoy the process,
+            and keep growing as drummers.
+          </p>
+        </div>
       </div>
-      <!-- Photo slots -->
-      <div class="grid grid-cols-2 gap-4">
-        {
-          [1, 2, 3, 4].map((n) => (
-            <div class="grid aspect-square place-items-center rounded-2xl border border-border bg-elevated text-xs text-gray-muted">
-              [TODO: photo {n}]
-            </div>
-          ))
-        }
+      <div class="grid grid-cols-2 gap-4 lg:sticky lg:top-28">
+        {/* TODO(DSA-media): studio interior wide shot (rooms, kits, lighting). */}
+        <MediaSlot alt="The DSA studio" label="Studio interior" aspect="4/3" class="col-span-2" />
+        {/* TODO(DSA-media): archival / early-years DSA photo, if available. */}
+        <MediaSlot alt="DSA in its early years" label="DSA through the years" aspect="1/1" />
+        {/* TODO(DSA-media): students performing at a DSA gig or community event. */}
+        <MediaSlot alt="DSA drummers performing" label="Performance" aspect="1/1" />
       </div>
     </div>
   </section>
 
-  <!-- Instructors -->
-  <section class="border-y border-border bg-surface">
-    <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h2 class="text-3xl font-bold text-white">Instructors</h2>
-      <div class="mt-10 grid gap-6 md:grid-cols-3">
-        {
-          instructors.map((i) => (
-            <div class="rounded-2xl border border-border bg-elevated p-6">
-              <div class="grid aspect-[4/3] place-items-center rounded-xl border border-border bg-surface text-xs text-gray-muted">
-                [TODO: photo]
-              </div>
-              <h3 class="mt-5 font-display text-lg font-bold text-white">{i.name}</h3>
-              <p class="text-sm font-semibold text-red">{i.role}</p>
-              <p class="mt-3 text-sm text-gray-light">{i.bio}</p>
-            </div>
-          ))
-        }
+  <!-- Our Mission -->
+  <section id="mission" class="scroll-mt-24 border-y border-border bg-surface" aria-labelledby="mission-title">
+    <div class="mx-auto max-w-4xl px-4 py-20 sm:px-6">
+      <p class="text-sm font-semibold uppercase tracking-wide text-red">Our Mission</p>
+      <h2 id="mission-title" class="mt-2 text-3xl font-bold text-white sm:text-4xl">
+        More than lessons. A real drum education.
+      </h2>
+      <div class="mt-6 space-y-5 text-lg leading-relaxed text-gray-light">
+        <p class="text-xl text-white">
+          Our mission is simple: provide a great drum education and create a
+          great drumming experience.
+        </p>
+        <p>
+          We believe learning the drums should be about more than learning a beat
+          or playing a song. It’s about developing strong fundamentals,
+          understanding the instrument, building confidence, discovering your
+          musicality, and having opportunities to put those skills into action.
+        </p>
+        <p>
+          That means giving drummers a structured path to learn while creating
+          an environment where they can explore, have fun, perform, and connect
+          with other people who love drums.
+        </p>
+        <p>
+          Whether someone is picking up sticks for the first time or continuing
+          a lifelong relationship with the instrument, we want them to have the
+          tools, guidance, and environment to keep moving forward.
+        </p>
+      </div>
+      <p class="mt-10 font-display text-2xl font-bold uppercase text-white sm:text-3xl">
+        Learn. Play. Experience. Grow.
+      </p>
+      <p class="mt-2 text-lg text-red">That’s the DSA way.</p>
+    </div>
+  </section>
+
+  <!-- Meet the Owner -->
+  <section id="owner" class="scroll-mt-24" aria-labelledby="owner-title">
+    <div class="mx-auto grid max-w-6xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
+      <div class="space-y-6 lg:sticky lg:top-28">
+        {/* TODO(DSA-media): portrait of Kyle Schweikhard, ideally at the kit in the studio (3:4). */}
+        <MediaSlot alt="Kyle Schweikhard, owner and founder of Drum Sync Academy" label="Kyle Schweikhard" aspect="3/4" />
+        {/* TODO(DSA-media): optional "Welcome from Kyle" video (30–60s), talking to camera
+            about DSA's philosophy. Pass src + poster to fill; delete this slot if unused. */}
+        <div>
+          <MediaSlot type="video" alt="Video: a welcome from Kyle" label="Welcome from Kyle" aspect="16/9" />
+          <p class="mt-2 text-sm text-gray-muted">A welcome from Kyle</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-red">Meet the Owner</p>
+        <h2 id="owner-title" class="mt-2 text-3xl font-bold text-white sm:text-4xl">Kyle Schweikhard</h2>
+        <p class="mt-2 font-display text-lg text-gray-light">Drummer. Educator. Clinician. Entrepreneur.</p>
+        <div class="mt-6 space-y-5 text-lg leading-relaxed text-gray-light">
+          <p>At the heart of Drum Sync Academy is its owner and founder, Kyle Schweikhard.</p>
+          <p>
+            A professional drummer, educator, clinician, and entrepreneur, Kyle
+            created DSA in 2005 with a vision for something more than a
+            traditional drum lesson studio.
+          </p>
+          <p>His philosophy is simple:</p>
+          <blockquote class="border-l-2 border-red pl-5 font-display text-2xl font-semibold text-white">
+            “DSA provides not just drum lessons, but a drum education.”
+          </blockquote>
+          <p>That philosophy has shaped DSA from the beginning.</p>
+          <p>
+            Kyle’s passion for drums extends beyond playing the instrument. He
+            believes in understanding how and why we play, developing strong
+            fundamentals, creating meaningful opportunities for drummers, and
+            building an environment where people can genuinely enjoy being
+            around the instrument.
+          </p>
+          <p>
+            That vision is what helped shape DSA into a 100% drums-only
+            community—a place built specifically around the education,
+            experience, and culture of drumming.
+          </p>
+          <p>From the lesson room to the stage, the goal has always been the same:</p>
+          <p class="text-white">
+            Help people become better drummers, give them something to be
+            excited about, and create a place they’re happy to be part of.
+          </p>
+          <p>And after all these years, there’s still one thing that hasn’t changed:</p>
+          <p class="font-display text-2xl font-bold text-white">We really, really love drums.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="mx-auto max-w-3xl px-4 py-20 sm:px-6">
-    <h2 class="text-3xl font-bold text-white">Frequently asked questions</h2>
-    <div class="mt-8 space-y-3">
-      {
-        faqs.map((f) => (
-          <FaqItem question={f.q}>{f.a}</FaqItem>
-        ))
-      }
-    </div>
-
-    <div class="mt-12">
-      <Button href="/book-assessment" variant="primary">Book Your Assessment</Button>
+  <section id="faq" class="scroll-mt-24 border-t border-border bg-surface" aria-labelledby="faq-title">
+    <div class="mx-auto max-w-3xl px-4 py-20 sm:px-6">
+      <h2 id="faq-title" class="text-3xl font-bold uppercase text-white sm:text-4xl">FAQs</h2>
+      <div class="mt-8 space-y-3">
+        {
+          faqs.map((f) => (
+            <FaqItem question={f.q}>
+              <Fragment set:html={f.a} />
+            </FaqItem>
+          ))
+        }
+      </div>
     </div>
   </section>
+
+  <CtaBand
+    heading="Ready to Experience DSA?"
+    body="All new DSA drummers begin with a Studio Tour. No pressure, no commitment—just a chance to see if we’re a good fit."
+    label="Request a Studio Tour"
+  />
 </BaseLayout>
